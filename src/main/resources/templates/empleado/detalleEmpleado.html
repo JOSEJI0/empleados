@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TSP | Nueva Página</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+/* Estructura para mantener el footer al fondo */
+body {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+main {
+	flex: 1;
+}
+
+.navbar-brand img {
+	height: 40px;
+}
+</style>
+</head>
+<body class="bg-light">
+	<header th:insert="~{fragmento/fragment :: header}"></header>
+	<main class="container mt-5 mb-5">
+		<div class="card shadow">
+			<div class="card-header bg-white py-3">
+				<h2 class="text-center mb-0 text-primary">Detalles del Empleado</h2>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-md-4 text-center">
+						<img
+							th:src="${empleado.foto != null} ? @{/imagenes/{img}(img=${empleado.foto})} : @{/images/no-image.png}"
+							alt="Foto del empleado"
+							class="img-fluid rounded shadow-sm border"
+							style="max-width: 250px; height: auto; object-fit: cover;">
+					</div>
+
+					<div class="col-md-8">
+						<ul class="list-group list-group-flush">
+							<li class="list-group-item"><strong>ID: </strong> <span
+								th:text="${empleado.id}"></span></li>
+							<li class="list-group-item"><strong>Nombre
+									Completo: </strong> <span
+								th:text="${empleado.nombreE} + ' ' + ${empleado.apellido}"></span></li>
+							<li class="list-group-item"><strong>Salario: </strong> <span
+								th:text="${'$ ' + #numbers.formatDecimal(empleado.salario, 1, 2)}"></span></li>
+							<li class="list-group-item"><strong>Fecha de
+									Ingreso: </strong> <span
+								th:text="${#dates.format(empleado.fechaIngreso, 'dd-MM-yyyy')}"></span></li>
+							<li class="list-group-item"><strong>Estatus: </strong> <span
+								th:if="${empleado.activo}" class="badge bg-success">Activo</span>
+								<span th:unless="${empleado.activo}" class="badge bg-danger">Inactivo</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="text-center mt-4">
+					<a th:href="@{/empleado/listar}" class="btn btn-secondary"> <i
+						class="fas fa-arrow-left me-1"></i> Volver a la lista
+					</a>
+				</div>
+			</div>
+		</div>
+	</main>
+	<footer th:insert="~{fragmento/fragment :: footer}"></footer>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

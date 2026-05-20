@@ -1,0 +1,9 @@
+package itch.tsp.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import itch.tsp.model.Actividad;
+
+public interface ActividadRepository extends JpaRepository<Actividad, Integer>{
+
+}

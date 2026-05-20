@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+	<nav th:fragment="menu-principal" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Sistema ITCH</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/empleado/index}">Datos Empleado</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/departamento/index}">Datos Departamento</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/usuarios/index}">Gestión Usuarios</a>
+                </li>
+            </ul>
+            
+            <div class="d-flex gap-2">
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar Sesión</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+</body>
+</html>
