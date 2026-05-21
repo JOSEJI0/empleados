@@ -21,7 +21,7 @@ public class ProyectoServiceJpa implements IProyectoService {
 
 	@Override
 	public List<Proyecto> buscarTodos() {
-		return proyectoRepository.findAll();
+		return proyectoRepository.findByActivoTrue();
 	}
 
 	@Override
@@ -40,25 +40,29 @@ public class ProyectoServiceJpa implements IProyectoService {
 
 	@Override
 	public void eliminar(Integer id) {
-		proyectoRepository.deleteById(id);
+	    Proyecto proyecto = proyectoRepository.findById(id).orElse(null);
+	    
+	    if (proyecto != null) {
+	        proyecto.setActivo(false);
+	        
+	        proyectoRepository.save(proyecto);
+	    }
 	}
 
-	// SOLUCIÓN: Método requerido para la página de bienvenida (proyectos en curso)
 	@Override
-	public List<Proyecto> buscarParaInicio() {
-		// Retorna todos los proyectos. Si en tu repositorio tienes un método específico 
-		// como findByActivo, puedes usarlo aquí.
-		return proyectoRepository.findAll();
+	public List<Proyecto> findProyectosActivosSinFechaFin() {
+	    return proyectoRepository.findProyectosActivosSinFechaFin();
 	}
 
-	// SOLUCIÓN: Filtro avanzado por fechas y nombre para el index principal
 	@Override
-	public List<Proyecto> buscarPorFiltrosInicio(String nombre, Date inicio, Date fin) {
-		// Implementación básica de contingencia que se alinea con tu controlador.
-		// Nota: Si usas consultas personalizadas, puedes mapearlo a los métodos Query de tu repositorio.
-		if (nombre != null && !nombre.isEmpty()) {
-			return proyectoRepository.findAll(); // Filtro temporal de contingencia para compilar
-		}
-		return proyectoRepository.findAll();
+	public List<Proyecto> buscarPorFiltros(String nombre, Date fechaInicio) {
+	    if (nombre != null && !nombre.isEmpty() && fechaInicio != null) {
+	        return proyectoRepository.findByNombreContainingAndFechaInicioAndActivoTrueAndFechaFinIsNull(nombre, fechaInicio);
+	    } else if (nombre != null && !nombre.isEmpty()) {
+	        return proyectoRepository.findByNombreContainingAndActivoTrueAndFechaFinIsNull(nombre);
+	    } else if (fechaInicio != null) {
+	        return proyectoRepository.findByFechaInicioAndActivoTrueAndFechaFinIsNull(fechaInicio);
+	    }
+	    return proyectoRepository.findProyectosActivosSinFechaFin();
 	}
 }

@@ -18,22 +18,20 @@ public class inicioController {
     private IProyectoService proyectoService;
 
     @GetMapping("/")
-    public String mostrarIndex(@RequestParam(value = "nombre", required = false) String nombre,
-                               @RequestParam(value = "inicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date inicio,
-                               @RequestParam(value = "fin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date fin,
-                               Model model) {
+    public String index(
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaInicio,
+            Model model) {
         
         List<Proyecto> proyectos;
         
-        // Evaluar si el usuario usó el formulario de filtros
-        if ((nombre != null && !nombre.isEmpty()) || inicio != null || fin != null) {
-            proyectos = proyectoService.buscarPorFiltrosInicio(nombre, inicio, fin);
+        if (nombre != null || fechaInicio != null) {
+            proyectos = proyectoService.buscarPorFiltros(nombre, fechaInicio); 
         } else {
-            // Por defecto muestra TODOS los proyectos activos sin fecha de finalización
-            proyectos = proyectoService.buscarParaInicio();
+            proyectos = proyectoService.findProyectosActivosSinFechaFin();
         }
         
-        model.addAttribute("proyectosInicio", proyectos);
-        return "index"; 
+        model.addAttribute("proyectos", proyectos);
+        return "index";
     }
 }

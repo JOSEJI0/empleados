@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
 <title>Fragmentos Header y Footer</title>
@@ -10,14 +10,13 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
             <div class="container">
                 <a class="navbar-brand" href="#">
-                    <img th:src="@{/assets/foto1.jpg}" alt="Logo" width="40" height="40" class="d-inline-block align-text-top rounded-circle me-2">
-                    Sistema RRHH
+                    <img th:src="@{/images/logoTecNM.jpg}" alt="Logo" width="40" height="40" class="d-inline-block align-text-top rounded-circle me-2">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
+                    <ul class="navbar-nav ms-auto text-center align-items-center">
                     
                     	 <li class="nav-item me-3 text-light" sec:authorize="isAuthenticated()">
 					        <span class="badge bg-secondary">
@@ -25,24 +24,28 @@
 					        </span>
 					    </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="@{index}">Inicio</a>
+                            <a class="nav-link active" th:href="@{/}">Inicio</a>
                         </li>
                         <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
                             <a class="nav-link" th:href="@{/empleado/empleados}">Empleados</a>
                         </li>
-                        <li class="nav-item" sec:authorize= "hasRole('ROLE_ADMIN')">
+                        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
                             <a class="nav-link" th:href="@{/departamento/departamentos}">Departamentos</a>
                         </li>
                         
-                        <li class="nav-item" sec:authorize= "hasRole('ROLE_ADMIN')">
+                        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
                             <a class="nav-link" th:href="@{/contrato/contratos}">Contratos</a>
-                            </li>
+                        </li>
                             
-                        <li class="nav-item" sec:authorize= "hasRole('ROLE_ADMIN')">
+                        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
                             <a class="nav-link" th:href="@{/proyectos/proyectos}">Proyectos</a>
-                            </li>                          
+                        </li>
+
+                        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                            <a class="nav-link" th:href="@{/actividad/listar}">Actividades</a>
+                        </li>                          
 				    
-					    <li class="nav-item" sec:authorize="isAuthenticated()">
+					    <li class="nav-item ms-lg-2" sec:authorize="isAuthenticated()">
 					        <form th:action="@{/logout}" method="post" class="d-inline">
 					            <button type="submit" class="btn btn-outline-danger btn-sm fw-bold">
 					                <i class="bi bi-box-arrow-right"></i> Salir

@@ -33,7 +33,6 @@ public class ProyectoController {
     @Autowired
     private ProyectoServiceJpa proyectoService;
     
-    // --- NUEVAS INYECCIONES DE DEPENDENCIAS ---
     @Autowired
     private EmpleadoServiceJpa empleadoService;
     
@@ -82,6 +81,14 @@ public class ProyectoController {
     public String ver(@PathVariable("id") Integer id, Model model) {
         Proyecto proyecto = proyectoService.buscarPorId(id);
         model.addAttribute("proyecto", proyecto);
+        
+        List<Actividad> actividades = actividadRepo.findAll().stream()
+                .filter(a -> a.getProyecto() != null && 
+                             a.getProyecto().getId().equals(id) && 
+                             Boolean.TRUE.equals(a.getActivo()))
+                .toList();
+                
+        model.addAttribute("actividades", actividades);
         return "proyectos/verProyecto";
     }
 
@@ -139,12 +146,12 @@ public class ProyectoController {
         return "redirect:/proyectos/proyectos";
     }
 
-    // ========================================================
-
-    // Binder para formatear las fechas
     @InitBinder
-    public void initBinder(WebDataBinder webDatabinder) {
+    public void initBinder(WebDataBinder webDataBinder) {
+        // Define el formato que usa tu input type="date"
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        webDatabinder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
+        
+        // El segundo parámetro 'true' permite que valores vacíos se conviertan en null
+        webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
 }

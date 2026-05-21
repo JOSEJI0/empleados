@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Inicio - Sistema de Control</title>
@@ -14,48 +14,46 @@
             background-color: #f4f6f9;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        main {
-            flex: 1;
-        }
-        /* Estilos para el Encabezado Principal (Hero) */
+        main { flex: 1; }
         .hero-section {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, #002f6c 0%, #0056b3 100%);
             color: white;
             border-radius: 1rem;
-            padding: 4rem 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 3.5rem 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
         }
-        /* Efectos modernos para las tarjetas de acceso rápido */
         .module-card {
             border: none;
             border-radius: 1rem;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             background: white;
             cursor: pointer;
             text-decoration: none;
             color: inherit;
-            display: block; /* Para que todo el enlace sea clickeable */
+            display: block;
         }
         .module-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12) !important;
         }
         .icon-wrapper {
-            width: 80px;
-            height: 80px;
+            width: 75px;
+            height: 75px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 1.5rem auto;
-            font-size: 2.5rem;
+            font-size: 2.3rem;
         }
-        /* Colores específicos para cada módulo */
         .bg-empleados { background-color: rgba(13, 110, 253, 0.1); color: #0d6efd; }
         .bg-departamentos { background-color: rgba(25, 135, 84, 0.1); color: #198754; }
-        .bg-contratos { background-color: rgba(255, 193, 7, 0.1); color: #ffc107; }
+        .bg-contratos { background-color: rgba(255, 193, 7, 0.15); color: #f5b041; }
         .bg-proyectos { background-color: rgba(111, 66, 193, 0.1); color: #6f42c1; }
+        .bg-actividades { background-color: rgba(23, 162, 184, 0.1); color: #17a2b8; }
     </style>
 </head>
 <body>
@@ -64,54 +62,65 @@
 
     <main class="container mt-4 mb-5">
         
-        <div class="row g-4 justify-content-center">
-            
-            <div class="col-sm-6 col-lg-3">
-                <a th:href="@{/empleado/empleados}" class="card module-card shadow-sm h-100 p-4 text-center">
-                    <div class="icon-wrapper bg-empleados">
-                        <i class="bi bi-people-fill"></i>
-                    </div>
-                    <h5 class="fw-bold mb-2">Empleados</h5>
-                    <p class="text-muted small mb-0">Gestión de personal, salarios y perfiles.</p>
-                </a>
-            </div>
-
-            <div class="col-sm-6 col-lg-3">
-                <a th:href="@{/departamento/departamentos}" class="card module-card shadow-sm h-100 p-4 text-center">
-                    <div class="icon-wrapper bg-departamentos">
-                        <i class="bi bi-buildings-fill"></i>
-                    </div>
-                    <h5 class="fw-bold mb-2">Departamentos</h5>
-                    <p class="text-muted small mb-0">Estructura organizacional y áreas.</p>
-                </a>
-            </div>
-
-            <div class="col-sm-6 col-lg-3">
-                <a th:href="@{/contratos/contratos}" class="card module-card shadow-sm h-100 p-4 text-center">
-                    <div class="icon-wrapper bg-contratos">
-                        <i class="bi bi-file-earmark-text-fill"></i>
-                    </div>
-                    <h5 class="fw-bold mb-2">Contratos</h5>
-                    <p class="text-muted small mb-0">Documentación y vinculación laboral.</p>
-                </a>
-            </div>
-
-            <div class="col-sm-6 col-lg-3">
-                <a th:href="@{/proyectos/proyectos}" class="card module-card shadow-sm h-100 p-4 text-center">
-                    <div class="icon-wrapper bg-proyectos">
-                        <i class="bi bi-kanban-fill"></i>
-                    </div>
-                    <h5 class="fw-bold mb-2">Proyectos</h5>
-                    <p class="text-muted small mb-0">Control de tareas, fechas y progreso.</p>
-                </a>
-            </div>
-
+        <div class="hero-section text-center text-md-start">
+            <h1 class="display-5 fw-bold mb-2">Panel de Control Integral</h1>
+            <p class="lead mb-0 opacity-75">Bienvenido al Sistema de Gestión de Recursos Humanos.</p>
         </div>
 
+        <div class="row g-4 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 justify-content-center mb-5">
+            <div class="col"><a th:href="@{/empleado/empleados}" class="card module-card shadow-sm h-100 p-4 text-center"><div class="icon-wrapper bg-empleados"><i class="bi bi-people-fill"></i></div><h6 class="fw-bold mb-2">Empleados</h6></a></div>
+            <div class="col"><a th:href="@{/departamento/departamentos}" class="card module-card shadow-sm h-100 p-4 text-center"><div class="icon-wrapper bg-departamentos"><i class="bi bi-buildings-fill"></i></div><h6 class="fw-bold mb-2">Departamentos</h6></a></div>
+            <div class="col"><a th:href="@{/contrato/contratos}" class="card module-card shadow-sm h-100 p-4 text-center"><div class="icon-wrapper bg-contratos"><i class="bi bi-file-earmark-text-fill"></i></div><h6 class="fw-bold mb-2">Contratos</h6></a></div>
+            <div class="col"><a th:href="@{/proyectos/proyectos}" class="card module-card shadow-sm h-100 p-4 text-center"><div class="icon-wrapper bg-proyectos"><i class="bi bi-kanban-fill"></i></div><h6 class="fw-bold mb-2">Proyectos</h6></a></div>
+            <div class="col"><a th:href="@{/actividad/listar}" class="card module-card shadow-sm h-100 p-4 text-center"><div class="icon-wrapper bg-actividades"><i class="bi bi-clipboard-check-fill"></i></div><h6 class="fw-bold mb-2">Actividades</h6></a></div>
+        </div>
+
+        <div class="container mt-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3">
+                    <h4 class="mb-0 text-secondary fw-bold">Proyectos en Curso</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/}" method="get" class="row g-3 mb-4">
+                        <div class="col-md-5">
+                            <input type="text" name="nombre" class="form-control" placeholder="Buscar por nombre..." th:value="${param.nombre}">
+                        </div>
+                        <div class="col-md-5">
+                            <input type="date" name="fechaInicio" class="form-control" th:value="${param.fechaInicio}">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Buscar</button>
+                        </div>
+                    </form>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nombre del Proyecto</th>
+                                    <th>Fecha de Inicio</th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="p : ${proyectos}">
+                                    <td class="fw-bold" th:text="${p.nombre}"></td>
+                                    <td th:text="${p.fechaInicio != null ? #dates.format(p.fechaInicio, 'dd/MM/yyyy') : 'N/A'}"></td>
+                                    <td class="text-center">
+                                        <a th:href="@{/proyectos/ver/{id}(id=${p.id})}" class="btn btn-sm btn-outline-info">
+                                            <i class="bi bi-eye"></i> Ver Detalles
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <footer th:insert="~{fragmentos/fragments :: footer}"></footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

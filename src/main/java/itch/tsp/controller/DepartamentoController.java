@@ -41,31 +41,25 @@ public class DepartamentoController {
 	
 	@PostMapping("/guardar")
 	public String guardar(Departamento departamento, RedirectAttributes attributes, @RequestParam("file") MultipartFile multipart) {
-		//Guardar imagen en la carpeta D:/imagenes/ y establecer la ruta en el objeto departamento
-		//Recuperar ID
-		if(departamento.getId() != null) {
-			//Departamento Existente
-			Departamento departamentoOriginal = departamentoService.buscarDepPorId(departamento.getId());
-			departamento.setActivo(departamentoOriginal.getActivo());
-			if(multipart.isEmpty()) {
-				departamento.setFotoDep(departamentoOriginal.getFotoDep());
-			}
-			
-		}else {
-			//Nuevo Departamento
-			departamento.setActivo(true);
-		}
-		//Imagen nueva
-			if(!multipart.isEmpty()) {
-				String ruta = "D:/imagenes/departamentos/";
-				String nombreImagen = Utileria.guardarArchivo(multipart, ruta);
-				if(nombreImagen != null) {
-					departamento.setFotoDep(nombreImagen);
-				}
-			}
-		
-		
-		System.out.println("Departamento Guardado: " + departamento.getNombre());
+	    if(departamento.getId() != null) {
+	        Departamento departamentoOriginal = departamentoService.buscarDepPorId(departamento.getId());
+	        departamento.setActivo(departamentoOriginal.getActivo());
+	        if(multipart.isEmpty()) {
+	            departamento.setFotoDep(departamentoOriginal.getFotoDep());
+	        }
+	    } else {
+	        departamento.setActivo(true);
+	    }
+
+	    // CORRECCIÓN: Ruta relativa dentro del contexto del servidor
+	    if(!multipart.isEmpty()) {
+	        String ruta = "./imagenes/departamentos/"; 
+	        String nombreImagen = Utileria.guardarArchivo(multipart, ruta);
+	        if(nombreImagen != null) {
+	            departamento.setFotoDep(nombreImagen);
+	        }
+	    }
+	    
 	    attributes.addFlashAttribute("msg", "Datos del departamento guardados correctamente");
 	    departamentoService.guardarDep(departamento);
 	    return "redirect:/departamento/departamentos"; 

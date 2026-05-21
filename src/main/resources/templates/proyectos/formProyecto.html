@@ -40,7 +40,7 @@
                                         <span class="input-group-text bg-light"><i class="bi bi-activity"></i></span>
                                         <select th:field="*{statusProyecto}" class="form-select border-primary" required>
                                             <option value="" disabled selected>-- Seleccione Estado --</option>
-                                            <option th:each="estado : ${T(com.example.demo.model.Proyecto.StatusProyecto).values()}" 
+                                            <option th:each="estado : ${T(itch.tsp.model.Proyecto.StatusProyecto).values()}" 
                                                     th:value="${estado}" 
                                                     th:text="${estado}">
                                             </option>
@@ -61,14 +61,14 @@
                                     <label class="form-label fw-bold">Fecha de Fin (Estimada)</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light"><i class="bi bi-calendar-check"></i></span>
-                                        <input type="date" th:field="*{fechaFin}" class="form-control" required>
+                                        <input type="date" th:field="*{fechaFin}" class="form-control">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="mb-4">
                                 <label class="form-label fw-bold">Descripción / Alcance</label>
-                                <textarea th:field="*{descripcion}" class="form-control" rows="4" placeholder="Describe los objetivos y alcance del proyecto..."></textarea>
+                                <textarea th:field="*{descripcion}" class="form-control" rows="4" placeholder="Describe los objetivos and alcance del proyecto..."></textarea>
                             </div>
                             
                             <hr class="my-4">

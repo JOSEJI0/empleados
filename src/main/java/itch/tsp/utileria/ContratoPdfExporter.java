@@ -24,166 +24,178 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class ContratoPdfExporter {
 
-    private Contrato contrato;
+	private Contrato contrato;
 
-    private final String RUTA_IMAGENES = "D:/imagenes/empleados/";
+	private final String RUTA_IMAGENES = "./imagenes/empleados/";
 
-    public ContratoPdfExporter(Contrato contrato) {
-        this.contrato = contrato;
-    }
+	public ContratoPdfExporter(Contrato contrato) {
+		this.contrato = contrato;
+	}
 
-    public void exportar(HttpServletResponse response) throws DocumentException, IOException {
-        Document documento = new Document(PageSize.A4);
-        PdfWriter.getInstance(documento, response.getOutputStream());
+	public void exportar(HttpServletResponse response) throws DocumentException, IOException {
+		Document documento = new Document(PageSize.A4);
+		PdfWriter.getInstance(documento, response.getOutputStream());
 
-        documento.open();
+		documento.open();
 
-        // --- 1. DEFINICIÓN DE FUENTES Y COLORES ---
-        Font fuenteTitulo = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, new Color(33, 37, 41));
-        Font fuenteSubtitulo = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, new Color(13, 110, 253));
-        Font fuenteCuerpo = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
+		// --- 1. DEFINICIÓN DE FUENTES Y COLORES ---
+		Font fuenteTitulo = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, new Color(33, 37, 41));
+		Font fuenteSubtitulo = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, new Color(13, 110, 253));
+		Font fuenteCuerpo = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
 
-        // --- 2. ENCABEZADO ---
-        Paragraph titulo = new Paragraph("EXPEDIENTE DE CONTRATO LABORAL", fuenteTitulo);
-        titulo.setAlignment(Paragraph.ALIGN_CENTER);
-        titulo.setSpacingAfter(5);
-        documento.add(titulo);
+		// --- 2. ENCABEZADO ---
+		Paragraph titulo = new Paragraph("EXPEDIENTE DE CONTRATO LABORAL", fuenteTitulo);
+		titulo.setAlignment(Paragraph.ALIGN_CENTER);
+		titulo.setSpacingAfter(5);
+		documento.add(titulo);
 
-        Paragraph folio = new Paragraph("Folio N°: " + contrato.getId() + " | Sistema RRHH TSPW", FontFactory.getFont(FontFactory.HELVETICA, 10, Color.GRAY));
-        folio.setAlignment(Paragraph.ALIGN_CENTER);
-        folio.setSpacingAfter(25);
-        documento.add(folio);
+		Paragraph folio = new Paragraph("Folio N°: " + contrato.getId() + " | Sistema TSPW",
+				FontFactory.getFont(FontFactory.HELVETICA, 10, Color.GRAY));
+		folio.setAlignment(Paragraph.ALIGN_CENTER);
+		folio.setSpacingAfter(25);
+		documento.add(folio);
 
-        // --- 3. SECCIÓN 1: DATOS DEL EMPLEADO (CON FOTO) ---
-        Paragraph sub1 = new Paragraph("I. DATOS DEL TRABAJADOR", fuenteSubtitulo);
-        sub1.setSpacingAfter(10);
-        documento.add(sub1);
+		// --- 3. SECCIÓN 1: DATOS DEL EMPLEADO (CON FOTO) ---
+		Paragraph sub1 = new Paragraph("I. DATOS DEL TRABAJADOR", fuenteSubtitulo);
+		sub1.setSpacingAfter(10);
+		documento.add(sub1);
 
-        // Tabla principal
-        PdfPTable tablaSeccion1 = new PdfPTable(2);
-        tablaSeccion1.setWidthPercentage(100);
-        tablaSeccion1.setWidths(new float[] { 2.5f, 7.5f }); // 25% para la foto, 75% para los datos
-        tablaSeccion1.setSpacingAfter(20);
+		// Tabla principal
+		PdfPTable tablaSeccion1 = new PdfPTable(2);
+		tablaSeccion1.setWidthPercentage(100);
+		tablaSeccion1.setWidths(new float[] { 2.5f, 7.5f }); // 25% para la foto, 75% para los datos
+		tablaSeccion1.setSpacingAfter(20);
 
-        // ---> A. Columna de la Foto
-        PdfPCell celdaFoto = new PdfPCell();
-        celdaFoto.setBorder(0);
-        celdaFoto.setHorizontalAlignment(Element.ALIGN_CENTER);
-        celdaFoto.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		// ---> A. Columna de la Foto
+		PdfPCell celdaFoto = new PdfPCell();
+		celdaFoto.setBorder(0);
+		celdaFoto.setHorizontalAlignment(Element.ALIGN_CENTER);
+		celdaFoto.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
-        boolean tieneFoto = contrato.getEmpleado() != null 
-                            && contrato.getEmpleado().getFoto() != null 
-                            && !contrato.getEmpleado().getFoto().equals("no-imagen.jpg") 
-                            && !contrato.getEmpleado().getFoto().isEmpty();
+		boolean tieneFoto = contrato.getEmpleado() != null && contrato.getEmpleado().getFoto() != null
+				&& !contrato.getEmpleado().getFoto().equals("no-imagen.jpg")
+				&& !contrato.getEmpleado().getFoto().isEmpty();
 
-        if (tieneFoto) {
-            try {
-                String rutaAbsoluta = RUTA_IMAGENES + contrato.getEmpleado().getFoto();
-                File archivoFisico = new File(rutaAbsoluta);
-                
-                if (archivoFisico.exists()) {
-                    Image img = Image.getInstance(rutaAbsoluta);
-                    img.scaleToFit(90, 90); // Ajustamos el tamaño de la foto
-                    img.setAlignment(Element.ALIGN_CENTER);
-                    celdaFoto.addElement(img);
-                } else {
-                    celdaFoto.addElement(new Paragraph("[Foto no encontrada en disco]", fuenteCuerpo));
-                }
-            } catch (Exception e) {
-                celdaFoto.addElement(new Paragraph("[Error al cargar foto]", fuenteCuerpo));
-            }
-        } else {
-            // Si no tiene foto, dejamos un recuadro o texto vacío
-            celdaFoto.addElement(new Paragraph("Sin fotografía\nregistrada", FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 9, Color.GRAY)));
-        }
-        tablaSeccion1.addCell(celdaFoto);
+		if (tieneFoto) {
+			try {
+				String rutaAbsoluta = RUTA_IMAGENES + contrato.getEmpleado().getFoto();
+				File archivoFisico = new File(rutaAbsoluta);
 
-        // ---> B. Columna de los Datos (Tabla Anidada)
-        PdfPTable tablaDatosPersonales = new PdfPTable(2);
-        tablaDatosPersonales.setWidthPercentage(100);
-        tablaDatosPersonales.setWidths(new float[] { 4f, 6f });
+				if (archivoFisico.exists()) {
+					Image img = Image.getInstance(rutaAbsoluta);
+					img.scaleToFit(90, 90); // Ajustamos el tamaño de la foto
+					img.setAlignment(Element.ALIGN_CENTER);
+					celdaFoto.addElement(img);
+				} else {
+					celdaFoto.addElement(new Paragraph("[Foto no encontrada en disco]", fuenteCuerpo));
+				}
+			} catch (Exception e) {
+				celdaFoto.addElement(new Paragraph("[Error al cargar foto]", fuenteCuerpo));
+			}
+		} else {
+			// Si no tiene foto, dejamos un recuadro o texto vacío
+			celdaFoto.addElement(new Paragraph("Sin fotografía\nregistrada",
+					FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 9, Color.GRAY)));
+		}
+		tablaSeccion1.addCell(celdaFoto);
 
-        String nombreCompleto = (contrato.getEmpleado() != null) ? contrato.getEmpleado().getNombre() + " " + contrato.getEmpleado().getApellidos() : "Sin asignar";
-        String depto = (contrato.getEmpleado() != null && contrato.getEmpleado().getDepartamento() != null) ? contrato.getEmpleado().getDepartamento().getNombre() : "Sin área asignada";
+		// ---> B. Columna de los Datos (Tabla Anidada)
+		PdfPTable tablaDatosPersonales = new PdfPTable(2);
+		tablaDatosPersonales.setWidthPercentage(100);
+		tablaDatosPersonales.setWidths(new float[] { 4f, 6f });
 
-        agregarCelda(tablaDatosPersonales, "Nombre Completo:", nombreCompleto, fuenteCuerpo);
-        agregarCelda(tablaDatosPersonales, "NSS:", contrato.getNoSeguroSocial(), fuenteCuerpo);
-        agregarCelda(tablaDatosPersonales, "Departamento:", depto, fuenteCuerpo);
+		String nombreCompleto = (contrato.getEmpleado() != null)
+				? contrato.getEmpleado().getNombre() + " " + contrato.getEmpleado().getApellidos()
+				: "Sin asignar";
+		String depto = (contrato.getEmpleado() != null && contrato.getEmpleado().getDepartamento() != null)
+				? contrato.getEmpleado().getDepartamento().getNombre()
+				: "Sin área asignada";
 
-        PdfPCell celdaDatos = new PdfPCell(tablaDatosPersonales);
-        celdaDatos.setBorder(0); // Quitamos el borde exterior para que se vea limpio
-        tablaSeccion1.addCell(celdaDatos);
+		agregarCelda(tablaDatosPersonales, "Nombre Completo:", nombreCompleto, fuenteCuerpo);
+		agregarCelda(tablaDatosPersonales, "NSS:", contrato.getNoSeguroSocial(), fuenteCuerpo);
+		agregarCelda(tablaDatosPersonales, "Departamento:", depto, fuenteCuerpo);
 
-        // Agregamos la estructura completa al documento
-        documento.add(tablaSeccion1);
+		PdfPCell celdaDatos = new PdfPCell(tablaDatosPersonales);
+		celdaDatos.setBorder(0); // Quitamos el borde exterior para que se vea limpio
+		tablaSeccion1.addCell(celdaDatos);
 
-        // --- 4. SECCIÓN 2: CONDICIONES DEL CONTRATO ---
-        Paragraph sub2 = new Paragraph("II. CONDICIONES LABORALES", fuenteSubtitulo);
-        sub2.setSpacingAfter(10);
-        documento.add(sub2);
+		// Agregamos la estructura completa al documento
+		documento.add(tablaSeccion1);
 
-        PdfPTable tablaContrato = new PdfPTable(2);
-        tablaContrato.setWidthPercentage(100);
-        tablaContrato.setWidths(new float[] { 3.5f, 6.5f });
-        tablaContrato.setSpacingAfter(20);
+		// --- 4. SECCIÓN 2: CONDICIONES DEL CONTRATO ---
+		Paragraph sub2 = new Paragraph("II. CONDICIONES LABORALES", fuenteSubtitulo);
+		sub2.setSpacingAfter(10);
+		documento.add(sub2);
 
-        String fechaIngresoStr = "No registrada";
-        if (contrato.getEmpleado() != null && contrato.getEmpleado().getFechaIngreso() != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd 'de' MMMM 'de' yyyy", new Locale("es", "MX"));
-            fechaIngresoStr = sdf.format(contrato.getEmpleado().getFechaIngreso());
-        }
+		PdfPTable tablaContrato = new PdfPTable(2);
+		tablaContrato.setWidthPercentage(100);
+		tablaContrato.setWidths(new float[] { 3.5f, 6.5f });
+		tablaContrato.setSpacingAfter(20);
 
-        String salarioStr = "$0.00";
-        if (contrato.getEmpleado() != null && contrato.getEmpleado().getSalario() != null) {
-            salarioStr = String.format("$%,.2f MXN", contrato.getEmpleado().getSalario());
-        }
+		String fechaIngresoStr = "No registrada";
+		if (contrato.getEmpleado() != null && contrato.getEmpleado().getFechaIngreso() != null) {
+			SimpleDateFormat sdf = new SimpleDateFormat("dd 'de' MMMM 'de' yyyy", new Locale("es", "MX"));
+			fechaIngresoStr = sdf.format(contrato.getEmpleado().getFechaIngreso());
+		}
 
-        agregarCelda(tablaContrato, "Tipo de Vinculación:", contrato.getTipoContrato(), fuenteCuerpo);
-        agregarCelda(tablaContrato, "Fecha de Ingreso:", fechaIngresoStr, fuenteCuerpo);
-        agregarCelda(tablaContrato, "Salario Mensual Bruto:", salarioStr, fuenteCuerpo);
+		String salarioStr = "$0.00";
+		if (contrato.getEmpleado() != null && contrato.getEmpleado().getSalario() != null) {
+			salarioStr = String.format("$%,.2f MXN", contrato.getEmpleado().getSalario());
+		}
 
-        documento.add(tablaContrato);
+		agregarCelda(tablaContrato, "Tipo de Vinculación:", contrato.getTipoContrato(), fuenteCuerpo);
+		agregarCelda(tablaContrato, "Fecha de Ingreso:", fechaIngresoStr, fuenteCuerpo);
+		agregarCelda(tablaContrato, "Salario Mensual Bruto:", salarioStr, fuenteCuerpo);
 
-        // --- 5. CLAÚSULAS / TEXTO LEGAL ---
-        Paragraph clausulas = new Paragraph(
-            "El presente documento es una representación impresa del expediente digitalizado en el Sistema de Gestión Área 51. " +
-            "El trabajador arriba mencionado declara estar conforme con el salario, el departamento asignado y el tipo de vinculación " +
-            "establecido. Ambas partes reconocen este documento como constancia legal de la relación laboral vigente.", fuenteCuerpo);
-        clausulas.setAlignment(Element.ALIGN_JUSTIFIED);
-        clausulas.setSpacingBefore(10);
-        clausulas.setSpacingAfter(60); // Más espacio para las firmas
-        documento.add(clausulas);
+		documento.add(tablaContrato);
 
-        // --- 6. FIRMAS ---
-        PdfPTable tablaFirmas = new PdfPTable(2);
-        tablaFirmas.setWidthPercentage(100);
-        
-        PdfPCell celdaEmpleadoFirma = new PdfPCell(new Phrase("_____________________________\nFirma del Trabajador\n" + nombreCompleto, fuenteCuerpo));
-        celdaEmpleadoFirma.setBorder(0);
-        celdaEmpleadoFirma.setHorizontalAlignment(Element.ALIGN_CENTER);
-        
-        PdfPCell celdaEmpresaFirma = new PdfPCell(new Phrase("_____________________________\nPor la Empresa\nDepartamento de Recursos Humanos", fuenteCuerpo));
-        celdaEmpresaFirma.setBorder(0);
-        celdaEmpresaFirma.setHorizontalAlignment(Element.ALIGN_CENTER);
-        
-        tablaFirmas.addCell(celdaEmpleadoFirma);
-        tablaFirmas.addCell(celdaEmpresaFirma);
-        
-        documento.add(tablaFirmas);
+		// --- 5. CLAÚSULAS / TEXTO LEGAL (Adaptado formal) ---
 
-        documento.close();
-    }
+		String textoLegal = "El presente documento constituye una representación impresa del expediente electrónico resguardado en el Sistema de Gestión. "
+				+ "El trabajador arriba citado manifiesta su plena conformidad con las condiciones salariales, la adscripción al departamento "
+				+ "y el esquema de vinculación laboral convenidos. En consecuencia, ambas partes reconocen la presente constancia como el "
+				+ "testimonio legal que acredita la existencia y vigencia de la relación de trabajo.";
 
-    private void agregarCelda(PdfPTable tabla, String etiqueta, String valor, Font fuenteValor) {
-        PdfPCell celdaEtiqueta = new PdfPCell(new Phrase(etiqueta, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10)));
-        celdaEtiqueta.setBackgroundColor(new Color(245, 245, 245));
-        celdaEtiqueta.setPadding(8f);
-        celdaEtiqueta.setBorderColor(new Color(200, 200, 200));
-        tabla.addCell(celdaEtiqueta);
+		Paragraph clausulas = new Paragraph(textoLegal, fuenteCuerpo);
+		clausulas.setAlignment(Element.ALIGN_JUSTIFIED);
+		clausulas.setSpacingBefore(15); // Un poco más de margen superior para separar
+		clausulas.setSpacingAfter(70); // Espacio suficiente para las firmas físicas
 
-        PdfPCell celdaValor = new PdfPCell(new Phrase(valor, fuenteValor));
-        celdaValor.setPadding(8f);
-        celdaValor.setBorderColor(new Color(200, 200, 200));
-        tabla.addCell(celdaValor);
-    }
+		documento.add(clausulas);
+
+		// --- 6. FIRMAS ---
+		PdfPTable tablaFirmas = new PdfPTable(2);
+		tablaFirmas.setWidthPercentage(100);
+
+		PdfPCell celdaEmpleadoFirma = new PdfPCell(
+				new Phrase("_____________________________\nFirma del Trabajador\n" + nombreCompleto, fuenteCuerpo));
+		celdaEmpleadoFirma.setBorder(0);
+		celdaEmpleadoFirma.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+		PdfPCell celdaEmpresaFirma = new PdfPCell(new Phrase(
+				"_____________________________\nPor la Empresa\nDepartamento de Recursos Humanos", fuenteCuerpo));
+		celdaEmpresaFirma.setBorder(0);
+		celdaEmpresaFirma.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+		tablaFirmas.addCell(celdaEmpleadoFirma);
+		tablaFirmas.addCell(celdaEmpresaFirma);
+
+		documento.add(tablaFirmas);
+
+		documento.close();
+	}
+
+	private void agregarCelda(PdfPTable tabla, String etiqueta, String valor, Font fuenteValor) {
+		PdfPCell celdaEtiqueta = new PdfPCell(
+				new Phrase(etiqueta, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10)));
+		celdaEtiqueta.setBackgroundColor(new Color(245, 245, 245));
+		celdaEtiqueta.setPadding(8f);
+		celdaEtiqueta.setBorderColor(new Color(200, 200, 200));
+		tabla.addCell(celdaEtiqueta);
+
+		PdfPCell celdaValor = new PdfPCell(new Phrase(valor, fuenteValor));
+		celdaValor.setPadding(8f);
+		celdaValor.setBorderColor(new Color(200, 200, 200));
+		tabla.addCell(celdaValor);
+	}
 }

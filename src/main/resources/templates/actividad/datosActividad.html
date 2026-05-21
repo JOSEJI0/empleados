@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Actividades</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body { display: flex; flex-direction: column; min-height: 100vh; background-color: #f8f9fa; } 
+        main { flex: 1; }
+    </style>
+</head>
+<body>
+
+    <header th:insert="~{fragmentos/fragments :: header}"></header>
+
+    <main class="container mt-5 mb-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                <h3 class="mb-0 text-secondary fw-bold">Gestión de Actividades</h3>
+                <a th:href="@{/actividad/nuevo}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle-fill me-1"></i> Nueva Actividad
+                </a>
+            </div>
+
+            <div class="card-body p-0">
+                <div th:if="${msg != null}" class="alert alert-success alert-dismissible fade show m-3" role="alert">
+                    <i class="bi bi-check-circle-fill me-1"></i> <span th:text="${msg}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">ID</th>
+                                <th>Actividad / Tarea</th>
+                                <th>Proyecto Relacionado</th>
+                                <th>Descripción</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:unless="${#lists.isEmpty(actividades)}" th:each="act : ${actividades}">
+                                <td class="fw-bold ps-4" th:text="${act.idActividad}">1</td>
+                                <td th:text="${act.nombre}">Nombre de la Tarea</td>
+                                <td>
+                                    <span th:if="${act.proyecto != null}" th:text="${act.proyecto.nombre}" class="badge bg-light text-dark border">Proyecto</span>
+                                    <span th:unless="${act.proyecto != null}" class="text-muted">Sin proyecto</span>
+                                </td>
+                                <td th:text="${act.descripcion}">Descripción detallada...</td>
+                                <td class="text-center pe-4">
+                                    <div class="btn-group" role="group">
+                                        <a th:href="@{/actividad/editar/{id}(id=${act.idActividad})}" class="btn btn-outline-warning btn-sm" title="Editar">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        <a th:href="@{/actividad/eliminar/{id}(id=${act.idActividad})}" class="btn btn-outline-danger btn-sm" title="Eliminar"
+                                           onclick="return confirm('¿Estás seguro de eliminar esta actividad?');">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div th:if="${#lists.isEmpty(actividades)}" class="text-center p-5 text-muted">
+                        <i class="bi bi-info-circle fs-1"></i>
+                        <p class="mt-2">No hay actividades registradas en el sistema actualmente.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:insert="~{fragmentos/fragments :: footer}"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

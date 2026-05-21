@@ -10,6 +10,6 @@ public interface IProyectoService {
     Proyecto buscarPorId(Integer id);
     void eliminar(Integer id);
     
-    List<Proyecto> buscarParaInicio();
-    List<Proyecto> buscarPorFiltrosInicio(String nombre, Date inicio, Date fin);
+    List<Proyecto> findProyectosActivosSinFechaFin();     
+    List<Proyecto> buscarPorFiltros(String nombre, Date fechaInicio);    
 }
