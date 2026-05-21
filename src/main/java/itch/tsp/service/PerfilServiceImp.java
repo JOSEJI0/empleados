@@ -1,11 +1,10 @@
-package itch.tsp.service.implementJPA;
+package itch.tsp.service;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import itch.tsp.model.Perfil;
 import itch.tsp.repository.PerfilRepository;
-import itch.tsp.service.IPerfilService;
 
 @Service
 public class PerfilServiceImp implements IPerfilService {

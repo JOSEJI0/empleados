@@ -1,13 +1,9 @@
 package itch.tsp.repository;
 
-import java.util.List;
+import itch.tsp.model.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import itch.tsp.model.Usuario;
-
-public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
-    List<Usuario> findByEstatus(Integer estatus);
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByUsername(String username);
 }

@@ -1,117 +1,50 @@
 package itch.tsp.model;
 
-import java.util.Date;
-import java.util.List;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.util.Set;
 
 @Entity
-@Table(name = "Usuario")
+@Table(name = "usuarios")
 public class Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id; 
-    
-    @Column(name = "nombre", nullable = true, length = 50)
-    private String nombre;
-    @Column(name = "email", nullable = true, unique = true, length = 100)
-    private String email; 
-    @Column(name = "username", nullable = true, unique = true, length = 45)
+    private Long id;
+
+    @Column(unique = true, nullable = false)
     private String username;
-    @Column(name = "password", nullable = true, length = 100)
+
+    @Column(nullable = false)
     private String password;
-    @Column(name = "estatus", nullable = true)
-    private Integer estatus;
-    @Column(name = "fechaRegistro", nullable = true)
-    private Date fechaRegistro;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "UsuarioPerfil",
-               joinColumns = @JoinColumn(name = "idUsuario"),
-               inverseJoinColumns = @JoinColumn(name = "idPerfil")) 
-    private List<Perfil> perfiles;
+    @JoinTable(
+        name = "usuarios_roles",
+        joinColumns = @JoinColumn(name = "usuario_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles;
 
-    // Getters y Setters
-    
-    public Integer getId() {
-		return id;
-	}
-    
-    public void setId(Integer id) {
-		this.id = id;
-	}
-	
-	public String getNombre() {
-		return nombre;
-	}
-	
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-	
-	public String getEmail() {
-		return email;
-	}
-	
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
-	public String getUsername() {
-		return username;
-	}
-	
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	
-	public String getPassword() {
-		return password;
-	}
-	
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-	public Integer getEstatus() {
-		return estatus;
-	}
-	
-	public void setEstatus(Integer estatus) {
-		this.estatus = estatus;
-	}
-	
-	public Date getFechaRegistro() {
-		return fechaRegistro;
-	}
-	
-	public void setFechaRegistro(Date fechaRegistro) {
-		this.fechaRegistro = fechaRegistro;
-	}
-	
-	// Getters y Setters para Perfiles
-    public List<Perfil> getPerfiles() {
-        return perfiles;
-    }
+    @Column(name = "enabled")
+    private boolean enabled = true;
 
-    public void setPerfiles(List<Perfil> perfiles) {
-        this.perfiles = perfiles;
-    }
+    @OneToOne
+    @JoinColumn(name = "id_empleado")
+    private Empleado empleado;
 
-	@Override
-	public String toString() {
-		return "Usuario [id=" + id + ", nombre=" + nombre + ", email=" + email + ", username=" + username
-				+ ", password=" + password + ", estatus=" + estatus + "]";
-	}
-	
-	
+    public Usuario() {}
+
+    // Getters y setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+    public Set<Role> getRoles() { return roles; }
+    public void setRoles(Set<Role> roles) { this.roles = roles; }
+    public boolean isEnabled() { return enabled; }
+    public void setEnabled(boolean enabled) { this.enabled = enabled; }
+    public Empleado getEmpleado() { return empleado; }
+    public void setEmpleado(Empleado empleado) { this.empleado = empleado; }
 }

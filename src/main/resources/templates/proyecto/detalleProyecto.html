@@ -1,57 +1,75 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>TSP | Detalle de Proyecto</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<meta charset="UTF-8">
+<title>TSP | Detalle de Proyecto</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-light">
-    <header th:insert="~{fragmento/fragment :: header}"></header>
-    
-    <main class="container mt-5 mb-5">
-        <div class="card shadow border-0 rounded-3 mb-4" th:if="${proyecto != null}">
-            <div class="card-header bg-primary text-white py-3">
-                <h3 class="mb-0 fw-bold"><i class="fas fa-folder-open me-2"></i>Información del Proyecto #<span th:text="${proyecto.id}"></span></h3>
-            </div>
-            <div class="card-body p-4">
-                <ul class="list-group list-group-flush mb-4">
-                    <li class="list-group-item"><strong>Nombre:</strong> <span th:text="${proyecto.nombre}"></span></li>
-                    <li class="list-group-item"><strong>Descripción:</strong> <span th:text="${proyecto.descripcion}"></span></li>
-                    <li class="list-group-item"><strong>Avance de Proyecto:</strong> <span class="badge bg-info text-dark uppercase fw-bold" th:text="${proyecto.statusProyecto}"></span></li>
-                    <li class="list-group-item"><strong>Fecha Inicio:</strong> <span th:text="${#dates.format(proyecto.fechaInicio, 'dd/MM/yyyy')}"></span></li>
-                    <li class="list-group-item"><strong>Fecha Fin:</strong> <span th:text="${proyecto.fechaFin != null ? #dates.format(proyecto.fechaFin, 'dd/MM/yyyy') : 'En Curso (Sin asignar)'}"></span></li>
-                </ul>
+	<header th:insert="~{fragmento/fragment :: header}"></header>
 
-                <h4 class="fw-bold text-secondary mt-4 mb-3"><i class="fas fa-clipboard-list me-2"></i>Actividades del Proyecto</h4>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover bg-white text-center">
-                        <thead class="table-light">
-                            <tr>
-                                <th>ID Actividad</th>
-                                <th>Nombre</th>
-                                <th>Descripción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="act : ${actividades}">
-                                <td th:text="${act.idActividad}"></td>
-                                <td th:text="${act.name} ?: ${act.nombre}"></td>
-                                <td th:text="${act.descripcion}"></td>
-                            </tr>
-                            <tr th:if="${#lists.isEmpty(actividades)}">
-                                <td colspan="3" class="text-muted small py-3">No hay actividades asignadas a este proyecto actualmente.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+	<main class="container mt-5 mb-5">
+		<div class="card shadow border-0 rounded-3 mb-4"
+			th:if="${proyecto != null}">
+			<div class="card-header bg-primary text-white py-3">
+				<h3 class="mb-0 fw-bold">
+					<i class="fas fa-folder-open me-2"></i>Información del Proyecto #<span
+						th:text="${proyecto.id}"></span>
+				</h3>
+			</div>
+			<div class="card-body p-4">
+				<ul class="list-group list-group-flush mb-4">
+					<li class="list-group-item"><strong>Nombre:</strong> <span
+						th:text="${proyecto.nombre}"></span></li>
+					<li class="list-group-item"><strong>Descripción:</strong> <span
+						th:text="${proyecto.descripcion}"></span></li>
+					<li class="list-group-item"><strong>Avance de
+							Proyecto:</strong> <span class="badge bg-info text-dark uppercase fw-bold"
+						th:text="${proyecto.statusProyecto}"></span></li>
+					<li class="list-group-item"><strong>Fecha Inicio:</strong> <span
+						th:text="${#dates.format(proyecto.fechaInicio, 'dd/MM/yyyy')}"></span></li>
+					<li class="list-group-item"><strong>Fecha Fin:</strong> <span
+						th:text="${proyecto.fechaFin != null ? #dates.format(proyecto.fechaFin, 'dd/MM/yyyy') : 'En Curso (Sin asignar)'}"></span></li>
+				</ul>
 
-                <div class="text-center mt-4">
-                    <a th:href="@{/proyecto/listar}" class="btn btn-secondary px-4"><i class="fas fa-arrow-left me-1"></i> Regresar</a>
-                </div>
-            </div>
-        </div>
-    </main>
-    <footer th:insert="~{fragmento/fragment :: footer}"></footer>
+				<h4 class="fw-bold text-secondary mt-4 mb-3">
+					<i class="fas fa-clipboard-list me-2"></i>Actividades del Proyecto
+				</h4>
+				<div class="table-responsive">
+					<table
+						class="table table-bordered table-hover bg-white text-center">
+						<thead class="table-light">
+							<tr>
+								<th>ID Actividad</th>
+								<th>Nombre</th>
+								<th>Descripción</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="act : ${actividades}">
+								<td th:text="${act.idActividad}"></td>
+								<td th:text="${act.nombre}"></td>
+								<td th:text="${act.descripcion}"></td>
+							</tr>
+							<tr th:if="${#lists.isEmpty(actividades)}">
+								<td colspan="3" class="text-muted small py-3">No hay
+									actividades asignadas a este proyecto actualmente.</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="text-center mt-4">
+					<a th:href="@{/proyecto/listar}" class="btn btn-secondary px-4"><i
+						class="fas fa-arrow-left me-1"></i> Regresar</a>
+				</div>
+			</div>
+		</div>
+	</main>
+	<footer th:insert="~{fragmento/fragment :: footer}"></footer>
 </body>
 </html>

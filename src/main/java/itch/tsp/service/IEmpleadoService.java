@@ -5,13 +5,12 @@ import java.util.List;
 import itch.tsp.model.Empleado;
 
 public interface IEmpleadoService {
+
 	List<Empleado> buscarTodosEmp();
 	
-	//Guardar un nuevo empleado
-	void guardarEmp(Empleado emp);
+	void guardarEmp(Empleado empleado);
 	
-	Empleado buscarEmpPorId(Integer idEmpleado);
-
-	void eliminarEmp(Integer idEmpleado);
-
+	Empleado buscarEmpPorId(Integer id);
+	
+	
 }

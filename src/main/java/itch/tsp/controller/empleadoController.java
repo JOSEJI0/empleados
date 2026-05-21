@@ -19,8 +19,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import itch.tsp.herramienta.Fotografia;
 import itch.tsp.model.Empleado;
-import itch.tsp.service.implementJPA.DepartamentoServiceImpJPA;
-import itch.tsp.service.implementJPA.EmpleadoServiceImpJPA;
+import itch.tsp.service.implementJPA.DepartamentoServiceJpa;
+import itch.tsp.service.implementJPA.EmpleadoServiceJpa;
 import itch.tsp.repository.HabilidadRepository;
 
 @RequestMapping("/empleado")
@@ -28,10 +28,13 @@ import itch.tsp.repository.HabilidadRepository;
 public class empleadoController {	
 	
 	@Autowired
-	private EmpleadoServiceImpJPA empleadoService;
+	private EmpleadoServiceJpa empleadoService;
 	
 	@Autowired
-	private DepartamentoServiceImpJPA departamentoService;
+	private DepartamentoServiceJpa departamentoService;
+	
+	// SOLUCIÓN: Se agregó @Autowired faltante que causaba NullPointerException
+	@Autowired
 	private HabilidadRepository habilidadRepository;
 	
 	@GetMapping("/listar")
@@ -43,8 +46,8 @@ public class empleadoController {
 	@GetMapping("/nuevo")
 	public String crearEmp(Model model) {
 	    model.addAttribute("empleado", new Empleado());
-	    model.addAttribute("departamentos", departamentoService.buscarTodos());
-	    model.addAttribute("todasHabilidades", habilidadRepository.findAll()); // Envia habilidades al formulario
+	    model.addAttribute("departamentos", departamentoService.buscarTodosDep());
+	    model.addAttribute("todasHabilidades", habilidadRepository.findAll()); 
 	    return "empleado/formEmpleado";
 	}
 
@@ -52,15 +55,16 @@ public class empleadoController {
 	public String editar(@PathVariable("id") int idEmpleado, Model model) {
 	    Empleado emp = empleadoService.buscarEmpPorId(idEmpleado);	    
 	    model.addAttribute("empleado", emp);
-	    model.addAttribute("departamentos", departamentoService.buscarTodos());
-	    model.addAttribute("todasHabilidades", habilidadRepository.findAll()); // Envia habilidades al formulario
+	    model.addAttribute("departamentos", departamentoService.buscarTodosDep());
+	    model.addAttribute("todasHabilidades", habilidadRepository.findAll()); 
 	    return "empleado/formEmpleado";
 	}
 
 	@GetMapping("/ver/{id}")
 	public String verDetalleEmpleado(@PathVariable("id") int idEmpleado, Model model) {
 	    Empleado emp = empleadoService.buscarEmpPorId(idEmpleado);
-	    if (emp.getContratos() != null && !emp.getContratos().isEmpty()) {
+	    model.addAttribute("empleado", emp); // Se agrega el objeto empleado principal
+	    if (emp != null && emp.getContratos() != null && !emp.getContratos().isEmpty()) {
 	        model.addAttribute("contrato", emp.getContratos().get(emp.getContratos().size() - 1));
 	    }
 	    return "empleado/detalleEmpleado";
@@ -77,6 +81,10 @@ public class empleadoController {
 			}
 		}
 		
+		if (emp.getActivo() == null) {
+			emp.setActivo(true);
+		}
+		
 		empleadoService.guardarEmp(emp);
 		attributes.addFlashAttribute("msg", "Datos del empleado guardados correctamente");
 		return "redirect:/empleado/listar";
@@ -85,7 +93,7 @@ public class empleadoController {
 	@InitBinder
 	public void initBinder(WebDataBinder webDataBinder) {
 	  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	  webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
+	  webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
 	}
 				
 	@GetMapping("/eliminar/{id}")

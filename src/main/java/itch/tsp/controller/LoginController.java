@@ -1,4 +1,4 @@
-package itch.tsp.controller;
+package com.example.demo.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +8,11 @@ public class LoginController {
 
     @GetMapping("/login")
     public String login() {
-        return "login/login"; // templates/login/login.html
+        return "login";
+    }
+
+    @GetMapping("/access-denied")
+    public String accessDenied() {
+        return "access-denied";
     }
 }

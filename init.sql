@@ -1,8 +1,8 @@
 USE empleado;
 
 -- Datos obligatorios de perfiles y administrador base
-INSERT IGNORE INTO Perfil (id, perfil) VALUES (1, 'ADMIN');
-INSERT IGNORE INTO Perfil (id, perfil) VALUES (2, 'USUARIO');
+INSERT IGNORE INTO Perfil (id, perfil) VALUES (2, 'ADMIN');
+INSERT IGNORE INTO Perfil (id, perfil) VALUES (1, 'USUARIO');
 
 -- Registro de habilidades exigido por el PDF
 INSERT IGNORE INTO Habilidad (id, nombre, descripcion) VALUES (1, 'Java Spring Boot 3', 'Desarrollo backend y arquitectura empresarial');

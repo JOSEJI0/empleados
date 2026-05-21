@@ -3,45 +3,45 @@ package itch.tsp.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Contrato")
 public class Contrato {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    
-    @Column(name = "numeroSeguroSocial", nullable = true, length = 50)
-    private String numeroSeguroSocial;
-    
-    @Column(name = "tipoContrato", nullable = true, length = 50)
-    private String tipoContrato;
-    
-    @Column(name = "activo", nullable = true)
-    private Integer activo;
-
-    @OneToOne
-    @JoinColumn(name = "empleado_id")
-    private Empleado empleado;
-    
-    public Contrato() {}
-
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
 	
-    public Integer getActivo() { return activo; }
-    public void setActivo(Integer activo) { this.activo = activo; }
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	
+	@Column(name = "numero_seguro_social")
+	private String noSeguroSocial;
+	
+	private String tipo_contrato;		
+	
+	@ManyToOne
+	@JoinColumn(name = "id_emp")
+	private Empleado empleado;
+	private Integer estado = 1;
+	private Boolean activo = true;
 
-    public String getNumeroSeguroSocial() { return numeroSeguroSocial; }
-    public void setNumeroSeguroSocial(String numeroSeguroSocial) { this.numeroSeguroSocial = numeroSeguroSocial; }
+	public Contrato() {}
 
-    public String getTipoContrato() { return tipoContrato; }
-    public void setTipoContrato(String tipoContrato) { this.tipoContrato = tipoContrato; }
+    // Getters y Setters
+	public Integer getId() { return id; }
+	public void setId(Integer id) { this.id = id; }
+	public String getNoSeguroSocial() { return noSeguroSocial; }
+	public void setNoSeguroSocial(String noSeguroSocial) { this.noSeguroSocial = noSeguroSocial; }
+	public String getTipoContrato() { return tipo_contrato; }
+	public void setTipoContrato(String tipoContrato) { this.tipo_contrato = tipoContrato; }
+	public Empleado getEmpleado() { return empleado; }
+	public void setEmpleado(Empleado empleado) { this.empleado = empleado; }
+	public Boolean getActivo() { return activo; }
+	public void setActivo(Boolean activo) { this.activo = activo; }
+	public Integer getEstado() {
+		return estado;
+	}
+	public void setEstado(Integer estado) {
+		this.estado = estado;
+	}
 
-    public Empleado getEmpleado() { return empleado; }
-    public void setEmpleado(Empleado empleado) { this.empleado = empleado; }
-
-    @Override
+	@Override
     public String toString() {
-        return "Contrato [id=" + id + ", numeroSeguroSocial=" + numeroSeguroSocial + ", tipoContrato=" + tipoContrato
-                + ", activo=" + activo + "]";
+        return "Contrato [ID=" + id + ", NSS=" + noSeguroSocial + ", Tipo=" + tipo_contrato + ", Empleado=" + (empleado != null ? empleado.getNombre() : "N/A") + "]";
     }
 }

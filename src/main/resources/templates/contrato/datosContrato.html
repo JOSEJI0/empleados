@@ -91,16 +91,17 @@ main {
 										<a th:href="@{/contrato/ver/{id}(id=${contrato.id})}"
 											class="btn btn-info btn-sm text-white" title="Ver Detalle">
 											<i class="fas fa-eye"></i>
-										</a> <a th:href="@{/contrato/editar/{id}(id=${contrato.id})}"
-											class="btn btn-warning btn-sm text-white" title="Editar">
-											<i class="fas fa-edit"></i>
 										</a> <a th:href="@{/contrato/imprimir/{id}(id=${contrato.id})}"
 											class="btn btn-dark btn-sm" title="Imprimir PDF"
-											target="_blank"> <i class="fas fa-print"></i> Imprimir
-											PDF
-										</a> <a th:href="@{/contrato/eliminar/{id}(id=${contrato.id})}"
+											target="_blank"> <i class="fas fa-print"></i>
+										</a> <a sec:authorize="hasAuthority('ADMIN')"
+											th:href="@{/contrato/editar/{id}(id=${contrato.id})}"
+											class="btn btn-warning btn-sm text-white" title="Editar">
+											<i class="fas fa-edit"></i>
+										</a> <a sec:authorize="hasAuthority('ADMIN')"
+											th:href="@{/contrato/eliminar/{id}(id=${contrato.id})}"
 											class="btn btn-danger btn-sm"
-											onclick="return confirm('¿Desea eliminar el registro?');"
+											onclick="return confirm('¿Desea desactivar este contrato?');"
 											title="Eliminar"> <i class="fas fa-trash"></i>
 										</a>
 									</div>

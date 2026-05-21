@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,14 +21,11 @@ main {
 	flex: 1;
 }
 
-.navbar-brand img {
-	height: 40px;
-}
-
 .img-profile {
-	width: 50px;
-	height: 50px;
+	width: 45px;
+	height: 45px;
 	object-fit: cover;
+	border: 2px solid #fff;
 }
 </style>
 </head>
@@ -45,7 +43,8 @@ main {
 
 		<div class="card shadow">
 			<div class="card-header bg-white py-3">
-				<h2 class="text-center mb-0 text-primary">DATOS DEL EMPLEADO</h2>
+				<h2 class="text-center mb-0 text-primary fw-bold">DATOS DEL
+					EMPLEADO</h2>
 			</div>
 			<div class="card-body">
 				<div class="table-responsive">
@@ -70,27 +69,42 @@ main {
 								<td th:text="${empleado.apellido}"></td>
 								<td
 									th:text="${'$ ' + #numbers.formatDecimal(empleado.salario, 1, 'COMMA', 2, 'POINT')}"></td>
+
 								<td
-									th:text="${#dates.format(empleado.fechaIngreso, 'dd-MM-yyyy')}"></td>
+									th:text="${empleado.fechaIngreso != null ? #dates.format(empleado.fechaIngreso, 'dd-MM-yyyy') : 'Sin Fecha'}"></td>
+
 								<td><span th:if="${empleado.activo == 1}"
 									class="badge bg-success">Activo</span> <span
 									th:unless="${empleado.activo == 1}" class="badge bg-danger">Inactivo</span>
 								</td>
-								<td><img th:if="${empleado.foto != null}"
+								<td><img
+									th:if="${empleado.foto != null && empleado.foto != '' && empleado.foto != 'no-imagen.jpg'}"
 									th:src="@{/imagenes/{img}(img=${empleado.foto})}" alt="Foto"
 									class="rounded-circle shadow-sm img-profile"> <img
-									th:unless="${empleado.foto != null}"
-									src="https://via.placeholder.com/50?text=S/F"
+									th:unless="${empleado.foto != null && empleado.foto != '' && empleado.foto != 'no-imagen.jpg'}"
+									th:src="@{/images/no-imagen.jpg}" alt="Default"
 									class="rounded-circle shadow-sm img-profile"></td>
-								<td sec:authorize="hasAuthority('ROLE_ADMIN')">
-									<div class="btn-group">
-										<a th:href="@{/empleado/editar/{id}(id=${empleado.id})}"
-											class="btn btn-warning btn-sm"> <i class="fas fa-edit"></i>
-										</a> <a th:href="@{/empleado/eliminar/{id}(id=${empleado.id})}"
-											class="btn btn-danger btn-sm"> <i class="fas fa-trash"></i>
+								<td>
+									<div class="btn-group" role="group">
+										<a th:href="@{/empleado/ver/{id}(id=${empleado.id})}"
+											class="btn btn-info btn-sm text-white" title="Ver Detalles">
+											<i class="fas fa-eye"></i>
+										</a> <a sec:authorize="hasAuthority('ADMIN')"
+											th:href="@{/empleado/editar/{id}(id=${empleado.id})}"
+											class="btn btn-warning btn-sm text-white" title="Editar">
+											<i class="fas fa-edit"></i>
+										</a> <a sec:authorize="hasAuthority('ADMIN')"
+											th:href="@{/empleado/eliminar/{id}(id=${empleado.id})}"
+											class="btn btn-danger btn-sm"
+											onclick="return confirm('¿Estás seguro de que deseas desactivar este empleado?')"
+											title="Desactivar"> <i class="fas fa-trash"></i>
 										</a>
 									</div>
 								</td>
+							</tr>
+							<tr th:if="${#lists.isEmpty(empleados)}">
+								<td colspan="8" class="text-muted py-3">No hay empleados
+									activos en el sistema.</td>
 							</tr>
 						</tbody>
 					</table>
