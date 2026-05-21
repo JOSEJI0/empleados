@@ -25,13 +25,15 @@ public class inicioController {
         
         List<Proyecto> proyectos;
         
-        if ((nombre != null && !nombre.isEmpty()) || (inicio != null && fin != null)) {
-            proyectos = proyectoService.buscarPorFiltros(nombre, inicio, fin);
+        // Evaluar si el usuario usó el formulario de filtros
+        if ((nombre != null && !nombre.isEmpty()) || inicio != null || fin != null) {
+            proyectos = proyectoService.buscarPorFiltrosInicio(nombre, inicio, fin);
         } else {
+            // Por defecto muestra TODOS los proyectos activos sin fecha de finalización
             proyectos = proyectoService.buscarParaInicio();
         }
         
         model.addAttribute("proyectosInicio", proyectos);
-        return "index";
+        return "index"; 
     }
 }

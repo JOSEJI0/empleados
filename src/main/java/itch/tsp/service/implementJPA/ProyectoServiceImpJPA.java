@@ -76,13 +76,8 @@ public class ProyectoServiceImpJPA implements IProyectoService {
     }
 
     @Override
-    public List<Proyecto> buscarPorFiltros(String nombre, Date inicio, Date fin) {
-        if (nombre != null && !nombre.isEmpty()) {
-            return proyectoRepo.findByNombreContainingAndActivo(nombre, 1); //
-        }
-        if (inicio != null && fin != null) {
-            return proyectoRepo.findByFechaInicioBetweenAndActivo(inicio, fin, 1); //
-        }
-        return buscarTodosActivos();
+    public List<Proyecto> buscarPorFiltrosInicio(String nombre, Date inicio, Date fin) {
+        String nom = (nombre != null && !nombre.isEmpty()) ? nombre : null;
+        return proyectoRepo.buscarProyectosInicioConFiltros(nom, inicio, fin);
     }
 }

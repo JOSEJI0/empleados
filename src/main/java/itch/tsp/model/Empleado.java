@@ -3,6 +3,7 @@ package itch.tsp.model;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,7 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 
 
 
@@ -30,12 +31,12 @@ public class Empleado {
 	@Column(name = "salario", nullable = true)
 	private Double salario;
 	@Column(name = "fechaIngreso", nullable = true)
-	private Date fechaIngreso;	
+	private Date fechaIngreso;
+	@OneToMany(mappedBy = "empleado", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Contrato> contratos;
 	@ManyToOne
 	@JoinColumn(name = "departamento_id")
 	private Departamento departamento;
-	@OneToOne(mappedBy = "empleado")
-	private Contrato contrato;
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "EmpleadoHabilidad",
@@ -83,11 +84,11 @@ public class Empleado {
 	public void setDepartamento(Departamento departamento) {
 		this.departamento = departamento;
 	}
-	public Contrato getContrato() {
-		return contrato;
+	public List<Contrato> getContratos() {
+		return contratos;
 	}
-	public void setContrato(Contrato contrato) {
-		this.contrato = contrato;
+	public void setContratos(List<Contrato> contratos) {
+		this.contratos = contratos;
 	}
 	public List<Habilidad> getHabilidades() {
 		return habilidades;
@@ -110,9 +111,8 @@ public class Empleado {
 	@Override
 	public String toString() {
 		return "Empleado [id=" + id + ", nombreE=" + nombreE + ", apellido=" + apellido + ", salario=" + salario
-				+ ", fechaIngreso=" + fechaIngreso + ", departamento=" + departamento + ", contrato=" + contrato
+				+ ", fechaIngreso=" + fechaIngreso + ", contratos=" + contratos + ", departamento=" + departamento
 				+ ", habilidades=" + habilidades + ", activo=" + activo + ", foto=" + foto + "]";
 	}
-	
-		
+			
 }

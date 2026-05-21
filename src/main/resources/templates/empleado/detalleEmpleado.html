@@ -59,6 +59,7 @@ main {
 								th:if="${empleado.activo == 1}" class="badge bg-success">Activo</span>
 								<span th:unless="${empleado.activo == 1}"
 								class="badge bg-danger">Inactivo</span></li>
+
 							<li class="list-group-item"><strong>No. Contrato: </strong>
 								<span
 								th:text="${empleado.contrato != null ? empleado.contrato.id : 'Sin contrato asignado'}"></span>
@@ -67,13 +68,12 @@ main {
 									Contrato: </strong> <span
 								th:text="${empleado.contrato != null ? empleado.contrato.tipoContrato : 'N/A'}"></span>
 							</li>
-							<li class="list-group-item"><strong>Habilidades
-									Asociadas:</strong>
-								<div class="mt-2">
+							<li class="list-group-item"><strong>Habilidades:</strong>
+								<div class="mt-1">
 									<span th:each="hab : ${empleado.habilidades}"
-										class="badge bg-secondary me-1" th:text="${hab.nombre}"></span>
-									<span th:if="${#lists.isEmpty(empleado.habilidades)}"
-										class="text-muted small">Ninguna habilidad registrada.</span>
+										class="badge bg-dark me-1" th:text="${hab.nombre}"></span> <span
+										th:if="${#lists.isEmpty(empleado.habilidades)}"
+										class="text-muted small">Sin habilidades vinculadas</span>
 								</div></li>
 						</ul>
 					</div>

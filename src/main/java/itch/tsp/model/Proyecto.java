@@ -1,7 +1,7 @@
 package itch.tsp.model;
 
 import java.util.Date;
-
+import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
@@ -15,85 +15,57 @@ public class Proyecto {
     private StatusProyecto statusProyecto;
     
     public enum StatusProyecto {
-		inicio,
-		en_proceso,
-		finalizado,
-		cancelado
-	}	
+        inicio,
+        en_proceso,
+        finalizado,
+        cancelado
+    }   
     
     @Column(name = "nombre", nullable = true, length = 100, unique = true)
     private String nombre;
+    
     @Column(name = "fechaInicio", nullable = true)
     private Date fechaInicio;
+    
     @Column(name = "fechaFin", nullable = true)
     private Date fechaFin;
+    
     @Column(name = "descripcion", nullable = true)
     private String descripcion;
+    
     @Column(name = "activo", nullable = true)
     private Integer activo;
 
+    @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Actividad> actividades;
 
+    // Getters y Setters
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
-    public Integer getId() {
-        return id;
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public Date getFechaInicio() { return fechaInicio; }
+    public void setFechaInicio(Date fechaInicio) { this.fechaInicio = fechaInicio; }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public Date getFechaFin() { return fechaFin; }
+    public void setFechaFin(Date fechaFin) { this.fechaFin = fechaFin; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-    public Date getFechaInicio() {
-        return fechaInicio;
-    }
-
-    public void setFechaInicio(Date fechaInicio) {
-        this.fechaInicio = fechaInicio;
-    }
-
-    public Date getFechaFin() {
-        return fechaFin;
-    }
-
-    public void setFechaFin(Date fechaFin) {
-        this.fechaFin = fechaFin;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public StatusProyecto getStatusProyecto() {
-        return statusProyecto;
-    }
-
-    public void setStatusProyecto(StatusProyecto statusProyecto) {
-        this.statusProyecto = statusProyecto;
-    }
+    public StatusProyecto getStatusProyecto() { return statusProyecto; }
+    public void setStatusProyecto(StatusProyecto statusProyecto) { this.statusProyecto = statusProyecto; }
     
-    public Integer getActivo() {
-		return activo;
-	}
+    public Integer getActivo() { return activo; }
+    public void setActivo(Integer activo) { this.activo = activo; }
 
-	public void setActivo(Integer activo) {
-		this.activo = activo;
-	}
+    public List<Actividad> getActividades() { return actividades; }
+    public void setActividades(List<Actividad> actividades) { this.actividades = actividades; }
 
-	@Override
-	public String toString() {
-		return "Proyecto [id=" + id + ", statusProyecto=" + statusProyecto + ", nombre=" + nombre + ", fechaInicio="
-				+ fechaInicio + ", fechaFin=" + fechaFin + ", descripcion=" + descripcion + ", activo=" + activo + "]";
-	}
- 
+    @Override
+    public String toString() {
+        return "Proyecto [id=" + id + ", statusProyecto=" + statusProyecto + ", nombre=" + nombre + "]";
+    }
 }

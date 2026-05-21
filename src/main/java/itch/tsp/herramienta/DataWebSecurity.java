@@ -19,10 +19,14 @@ public class DataWebSecurity {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-            .requestMatchers("/css/**", "/js/**", "/images/**", "/imagenes/**").permitAll()
+            // Recursos estáticos y subidas locales libres
+            .requestMatchers("/bootstrap/**", "/css/**", "/js/**", "/images/**", "/imagenes/**").permitAll()
             .requestMatchers("/", "/login", "/usuarios/signup", "/usuarios/save").permitAll()
-            .requestMatchers("/usuarios/index", "/usuarios/delete/**").hasAuthority("ADMIN")
             
+            // Permisos de Administración del sistema
+            .requestMatchers("/usuarios/index", "/usuarios/delete/**", "/perfiles/**").hasAuthority("ADMIN")
+            
+            // Todo lo demás requiere autenticación tradicional
             .anyRequest().authenticated()
         ).formLogin(form -> form
             .loginPage("/login")

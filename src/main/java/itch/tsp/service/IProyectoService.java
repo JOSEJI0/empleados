@@ -10,5 +10,5 @@ public interface IProyectoService {
     List<Proyecto> buscarParaInicio();
     List<Proyecto> buscarTodosActivos();
     Proyecto buscarPorId(Integer id);
-    List<Proyecto> buscarPorFiltros(String nombre, Date inicio, Date fin);
+    List<Proyecto> buscarPorFiltrosInicio(String nombre, Date inicio, Date fin);
 }

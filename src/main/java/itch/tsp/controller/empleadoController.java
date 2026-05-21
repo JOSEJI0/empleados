@@ -44,7 +44,7 @@ public class empleadoController {
 	public String crearEmp(Model model) {
 	    model.addAttribute("empleado", new Empleado());
 	    model.addAttribute("departamentos", departamentoService.buscarTodos());
-	    model.addAttribute("todasHabilidades", habilidadRepository.findAll()); // <-- CORRECCIÓN
+	    model.addAttribute("todasHabilidades", habilidadRepository.findAll()); // Envia habilidades al formulario
 	    return "empleado/formEmpleado";
 	}
 
@@ -53,8 +53,17 @@ public class empleadoController {
 	    Empleado emp = empleadoService.buscarEmpPorId(idEmpleado);	    
 	    model.addAttribute("empleado", emp);
 	    model.addAttribute("departamentos", departamentoService.buscarTodos());
-	    model.addAttribute("todasHabilidades", habilidadRepository.findAll()); // <-- CORRECCIÓN
+	    model.addAttribute("todasHabilidades", habilidadRepository.findAll()); // Envia habilidades al formulario
 	    return "empleado/formEmpleado";
+	}
+
+	@GetMapping("/ver/{id}")
+	public String verDetalleEmpleado(@PathVariable("id") int idEmpleado, Model model) {
+	    Empleado emp = empleadoService.buscarEmpPorId(idEmpleado);
+	    if (emp.getContratos() != null && !emp.getContratos().isEmpty()) {
+	        model.addAttribute("contrato", emp.getContratos().get(emp.getContratos().size() - 1));
+	    }
+	    return "empleado/detalleEmpleado";
 	}
 	
 	@PostMapping("/guardar")
@@ -78,17 +87,7 @@ public class empleadoController {
 	  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	  webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
 	}
-		
-	@GetMapping("/ver/{id}")
-	public String verDetalleEmpleado(@PathVariable("id") int idEmpleado, Model model) {
-	    Empleado emp = empleadoService.buscarEmpPorId(idEmpleado);
-	    model.addAttribute("empleado", emp);
-	    if (emp != null && emp.getContrato() != null) {
-	        model.addAttribute("contrato", emp.getContrato());
-	    }
-	    return "empleado/detalleEmpleado";
-	}
-		
+				
 	@GetMapping("/eliminar/{id}")
 	public String eliminar(@PathVariable("id") int idEmpleado, RedirectAttributes attributes) {
 	    empleadoService.eliminarEmp(idEmpleado);
