@@ -19,6 +19,14 @@
 					PROYECTO</h2>
 			</div>
 			<div class="card-body p-4">
+				<div th:if="${error} != null"
+					class="alert alert-danger alert-dismissible fade show mb-4 shadow-sm"
+					role="alert">
+					<i class="fas fa-exclamation-triangle me-1"></i> <span
+						th:text="${error}"></span>
+					<button type="button" class="btn-close" data-bs-dismiss="alert"
+						aria-label="Close"></button>
+				</div>
 				<form th:action="@{/proyecto/guardar}" th:object="${proyecto}"
 					method="post">
 					<input type="hidden" th:field="*{id}"> <input type="hidden"

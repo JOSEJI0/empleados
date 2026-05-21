@@ -21,6 +21,7 @@ import itch.tsp.herramienta.Fotografia;
 import itch.tsp.model.Empleado;
 import itch.tsp.service.implementJPA.DepartamentoServiceImpJPA;
 import itch.tsp.service.implementJPA.EmpleadoServiceImpJPA;
+import itch.tsp.repository.HabilidadRepository;
 
 @RequestMapping("/empleado")
 @Controller
@@ -31,27 +32,29 @@ public class empleadoController {
 	
 	@Autowired
 	private DepartamentoServiceImpJPA departamentoService;
+	private HabilidadRepository habilidadRepository;
 	
 	@GetMapping("/listar")
     public String listar(Model model) {
         model.addAttribute("empleados", empleadoService.buscarTodosEmp());
         return "empleado/datosEmpleado";
     }
-	
-//	empleado empleado = new empleado();
-	
-//	empleado.setId(1);
-//	empleado.setNombre("Carlos");
-//	empleado.setApellido("López");
-//	empleado.setSalario(1520.15);
-//	empleado.setFechaIngreso(new Date());
-//	model.addAttribute("empleado", empleado);
-		
+
 	@GetMapping("/nuevo")
 	public String crearEmp(Model model) {
-		model.addAttribute("empleado", new Empleado());
-		model.addAttribute("departamentos", departamentoService.buscarTodos());
-		return "empleado/formEmpleado";
+	    model.addAttribute("empleado", new Empleado());
+	    model.addAttribute("departamentos", departamentoService.buscarTodos());
+	    model.addAttribute("todasHabilidades", habilidadRepository.findAll()); // <-- CORRECCIÓN
+	    return "empleado/formEmpleado";
+	}
+
+	@GetMapping("/editar/{id}")
+	public String editar(@PathVariable("id") int idEmpleado, Model model) {
+	    Empleado emp = empleadoService.buscarEmpPorId(idEmpleado);	    
+	    model.addAttribute("empleado", emp);
+	    model.addAttribute("departamentos", departamentoService.buscarTodos());
+	    model.addAttribute("todasHabilidades", habilidadRepository.findAll()); // <-- CORRECCIÓN
+	    return "empleado/formEmpleado";
 	}
 	
 	@PostMapping("/guardar")
@@ -75,22 +78,17 @@ public class empleadoController {
 	  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	  webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
 	}
-	
+		
 	@GetMapping("/ver/{id}")
 	public String verDetalleEmpleado(@PathVariable("id") int idEmpleado, Model model) {
-		Empleado emp = empleadoService.buscarEmpPorId(idEmpleado);
-		model.addAttribute("empleado", emp);
-		return "empleado/detalleEmpleado";
-		}
-	
-	@GetMapping("/editar/{id}")
-	public String editar(@PathVariable("id") int idEmpleado, Model model) {
-	    Empleado emp = empleadoService.buscarEmpPorId(idEmpleado);	    
+	    Empleado emp = empleadoService.buscarEmpPorId(idEmpleado);
 	    model.addAttribute("empleado", emp);
-	    model.addAttribute("departamentos", departamentoService.buscarTodos());
-	    return "empleado/formEmpleado";
+	    if (emp != null && emp.getContrato() != null) {
+	        model.addAttribute("contrato", emp.getContrato());
+	    }
+	    return "empleado/detalleEmpleado";
 	}
-	
+		
 	@GetMapping("/eliminar/{id}")
 	public String eliminar(@PathVariable("id") int idEmpleado, RedirectAttributes attributes) {
 	    empleadoService.eliminarEmp(idEmpleado);

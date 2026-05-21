@@ -56,9 +56,25 @@ main {
 									Ingreso: </strong> <span
 								th:text="${#dates.format(empleado.fechaIngreso, 'dd-MM-yyyy')}"></span></li>
 							<li class="list-group-item"><strong>Estatus: </strong> <span
-								th:if="${empleado.activo}" class="badge bg-success">Activo</span>
-								<span th:unless="${empleado.activo}" class="badge bg-danger">Inactivo</span>
+								th:if="${empleado.activo == 1}" class="badge bg-success">Activo</span>
+								<span th:unless="${empleado.activo == 1}"
+								class="badge bg-danger">Inactivo</span></li>
+							<li class="list-group-item"><strong>No. Contrato: </strong>
+								<span
+								th:text="${empleado.contrato != null ? empleado.contrato.id : 'Sin contrato asignado'}"></span>
 							</li>
+							<li class="list-group-item"><strong>Tipo de
+									Contrato: </strong> <span
+								th:text="${empleado.contrato != null ? empleado.contrato.tipoContrato : 'N/A'}"></span>
+							</li>
+							<li class="list-group-item"><strong>Habilidades
+									Asociadas:</strong>
+								<div class="mt-2">
+									<span th:each="hab : ${empleado.habilidades}"
+										class="badge bg-secondary me-1" th:text="${hab.nombre}"></span>
+									<span th:if="${#lists.isEmpty(empleado.habilidades)}"
+										class="text-muted small">Ninguna habilidad registrada.</span>
+								</div></li>
 						</ul>
 					</div>
 				</div>

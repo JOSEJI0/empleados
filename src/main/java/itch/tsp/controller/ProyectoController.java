@@ -51,9 +51,11 @@ public class ProyectoController {
 	        proyectoService.guardar(proyecto);
 	        attributes.addFlashAttribute("msg", "Proyecto guardado correctamente.");
 	        return "redirect:/proyecto/listar";
+	    } catch (IllegalArgumentException e) { 
+	        attributes.addFlashAttribute("error", e.getMessage());
+	        return "redirect:/proyecto/nuevo";
 	    } catch (Exception e) {
-	        System.out.println("Error al guardar: " + e.getMessage());
-	        attributes.addFlashAttribute("error", "Error: " + e.getMessage());
+	        attributes.addFlashAttribute("error", "Error inesperado al guardar el proyecto.");
 	        return "redirect:/proyecto/nuevo";
 	    }
 	}

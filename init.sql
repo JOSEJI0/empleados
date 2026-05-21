@@ -1,15 +1,18 @@
--- Crear la base de datos si no existe
-CREATE DATABASE IF NOT EXISTS empleado;
-USE empleado;
+-- Insertar Habilidades de prueba si no existen
+INSERT IGNORE INTO Habilidad (id, nombre, descripcion) VALUES (1, 'Java Spring Boot', 'Desarrollo de aplicaciones backend corporativas');
+INSERT IGNORE INTO Habilidad (id, nombre, descripcion) VALUES (2, 'SQL Avanzado', 'Optimización de consultas y diseño de bases de datos relacionales');
+INSERT IGNORE INTO Habilidad (id, nombre, descripcion) VALUES (3, 'Thymeleaf & Front', 'Diseño de vistas dinámicas utilizando Bootstrap');
 
--- Insertar el perfil de ADMIN si no existe (asumiendo ID 1 para ADMIN)
-INSERT IGNORE INTO perfil (id, perfil) VALUES (1, 'ADMIN');
-INSERT IGNORE INTO perfil (id, perfil) VALUES (2, 'USUARIO');
+-- Insertar un Proyecto de prueba inicial (Activo y sin fecha de fin)
+INSERT IGNORE INTO Proyecto (id, nombre, descripcion, fechaInicio, fechaFin, activo, statusProyecto) 
+VALUES (1, 'Sistema de Gestion Institucional', 'Desarrollo del software core para administracion escolar', NOW(), NULL, 1, 'en_proceso');
 
--- Insertar el usuario administrador (admin / 1234)
--- Nota: Como configuramos NoOpPasswordEncoder, la contraseña va tal cual
-INSERT IGNORE INTO usuario (id, username, password, email, estatus, fechaRegistro) 
-VALUES (1, 'admin', '1234', 'admin@tecnologico.edu.mx', 1, NOW());
+-- Insertar Actividades ligadas al proyecto de prueba
+INSERT IGNORE INTO Actividad (idActividad, nombre, descripcion, fechaInicio, fechaFin, proyecto_id) 
+VALUES (1, 'Diseño del Modelo de Datos', 'Creacion de diagramas entidad relacion y scripts SQL', NOW(), NULL, 1);
+INSERT IGNORE INTO Actividad (idActividad, nombre, descripcion, fechaInicio, fechaFin, proyecto_id) 
+VALUES (2, 'Implementacion de Spring Security', 'Configuracion de filtros de sesion y roles de usuario', NOW(), NULL, 1);
 
--- Relacionar el usuario con el perfil de ADMIN
-INSERT IGNORE INTO usuarioPerfil (idUsuario, idPerfil) VALUES (1, 1);
+-- Vincular un Empleado (ID 2 de tu lista en memoria o BD) con una actividad específica
+INSERT IGNORE INTO ActividadEmpleado (id, empleado_id, actividad_id, fechaAsignacion) 
+VALUES (1, 2, 1, NOW());
