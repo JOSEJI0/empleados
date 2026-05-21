@@ -5,6 +5,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import itch.tsp.model.Role;
+import itch.tsp.model.Usuario;
+import itch.tsp.repository.EmpleadoRepository;
+import itch.tsp.repository.RoleRepository;
+import itch.tsp.repository.UsuarioRepository;
+
 import java.util.HashSet;
 import java.util.Set;
 

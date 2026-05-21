@@ -2,9 +2,11 @@ package itch.tsp.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -17,89 +19,139 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import itch.tsp.herramienta.Fotografia;
 import itch.tsp.model.Empleado;
+import itch.tsp.model.Usuario;
 import itch.tsp.service.implementJPA.DepartamentoServiceJpa;
 import itch.tsp.service.implementJPA.EmpleadoServiceJpa;
-import itch.tsp.repository.HabilidadRepository;
+import itch.tsp.service.implementJPA.UsuarioServiceJpa;
+import itch.tsp.utileria.Utileria;
 
-@RequestMapping("/empleado")
+
 @Controller
-public class empleadoController {	
+public class EmpleadoController {
 	
 	@Autowired
 	private EmpleadoServiceJpa empleadoService;
 	
 	@Autowired
 	private DepartamentoServiceJpa departamentoService;
-	
-	// SOLUCIÓN: Se agregó @Autowired faltante que causaba NullPointerException
+
 	@Autowired
-	private HabilidadRepository habilidadRepository;
+	private PasswordEncoder passwordEncoder;
 	
-	@GetMapping("/listar")
-    public String listar(Model model) {
-        model.addAttribute("empleados", empleadoService.buscarTodosEmp());
-        return "empleado/datosEmpleado";
-    }
-
-	@GetMapping("/nuevo")
-	public String crearEmp(Model model) {
-	    model.addAttribute("empleado", new Empleado());
-	    model.addAttribute("departamentos", departamentoService.buscarTodosDep());
-	    model.addAttribute("todasHabilidades", habilidadRepository.findAll()); 
-	    return "empleado/formEmpleado";
-	}
-
-	@GetMapping("/editar/{id}")
-	public String editar(@PathVariable("id") int idEmpleado, Model model) {
-	    Empleado emp = empleadoService.buscarEmpPorId(idEmpleado);	    
-	    model.addAttribute("empleado", emp);
-	    model.addAttribute("departamentos", departamentoService.buscarTodosDep());
-	    model.addAttribute("todasHabilidades", habilidadRepository.findAll()); 
-	    return "empleado/formEmpleado";
-	}
-
-	@GetMapping("/ver/{id}")
-	public String verDetalleEmpleado(@PathVariable("id") int idEmpleado, Model model) {
-	    Empleado emp = empleadoService.buscarEmpPorId(idEmpleado);
-	    model.addAttribute("empleado", emp); // Se agrega el objeto empleado principal
-	    if (emp != null && emp.getContratos() != null && !emp.getContratos().isEmpty()) {
-	        model.addAttribute("contrato", emp.getContratos().get(emp.getContratos().size() - 1));
-	    }
-	    return "empleado/detalleEmpleado";
+	@Autowired
+	private UsuarioServiceJpa usuarioService;
+	
+	@RequestMapping("/empleado/empleados")
+	public String listarEmpleados(Model model) {
+		List<Empleado> listaEmpleados = empleadoService.buscarTodosEmp();
+		model.addAttribute("empleadosLista", listaEmpleados);
+		return "empleados/datosEmpleado";
 	}
 	
-	@PostMapping("/guardar")
-	public String guardarEmp(Empleado emp, RedirectAttributes attributes, @RequestParam("archivoImagen") MultipartFile multiPart) {
+	@GetMapping("/empleado/crear") 
+	public String crear(Model model) {
+		Empleado empleado = new Empleado();
+		model.addAttribute("empleado", empleado);
+		model.addAttribute("listaDepartamentos", departamentoService.buscarTodosDep());
+		return "empleados/formEmpleado";
+	}
+	
+	@PostMapping("/empleado/guardar")
+	public String guardar(Empleado empleado, RedirectAttributes attributes, 
+			@RequestParam("file") MultipartFile multiPart,
+			@RequestParam(value = "username", required = false) String username,
+			@RequestParam(value = "password", required = false) String password) { 
 		
-		if (!multiPart.isEmpty()) {
-			String ruta = "C:/empleados/imagenes/";
-			String nombreImagen = Fotografia.guardarFoto(multiPart, ruta);
-			if (nombreImagen != null) {
-				emp.setFoto(nombreImagen);
+		boolean esNuevo = (empleado.getId() == null);
+		
+		if (!esNuevo) {
+			Empleado empleadoOriginal = empleadoService.buscarEmpPorId(empleado.getId());
+			
+			// Mantener datos originales que no están en el formulario
+			empleado.setFechaIngreso(empleadoOriginal.getFechaIngreso());
+			empleado.setActivo(empleadoOriginal.getActivo());
+			
+			// RESCATE DE RELACIONES PARA EVITAR JpaSystemException
+			empleado.setActividades(empleadoOriginal.getActividades());
+			empleado.setContratos(empleadoOriginal.getContratos());
+			empleado.setHabilidades(empleadoOriginal.getHabilidades());
+			empleado.setUsuario(empleadoOriginal.getUsuario());
+			
+			if (empleado.getEstado() == null) {
+				empleado.setEstado(empleadoOriginal.getEstado());
+			}
+			
+			// Lógica de Foto en Edición
+			if (multiPart.isEmpty()) {
+				empleado.setFoto(empleadoOriginal.getFoto());
+			} else {
+				String ruta = "./imagenes/empleados/";
+				String nombreImagen = Utileria.guardarArchivo(multiPart, ruta);
+				if (nombreImagen != null) {
+					empleado.setFoto(nombreImagen);
+				}
+			}
+			
+		} else {
+			// Lógica para Nuevo Empleado
+			empleado.setFechaIngreso(new Date());	
+			empleado.setActivo(true);
+			
+			if (empleado.getEstado() == null) {
+				empleado.setEstado(1);
+			}
+			
+			if (!multiPart.isEmpty()) {
+				String ruta = "./imagenes/empleados/"; 
+				String nombreImagen = Utileria.guardarArchivo(multiPart, ruta);
+				if (nombreImagen != null) {
+					empleado.setFoto(nombreImagen);
+				}
 			}
 		}
 		
-		if (emp.getActivo() == null) {
-			emp.setActivo(true);
-		}
+		// 1. Guardar Empleado
+		empleadoService.guardarEmp(empleado);
 		
-		empleadoService.guardarEmp(emp);
-		attributes.addFlashAttribute("msg", "Datos del empleado guardados correctamente");
-		return "redirect:/empleado/listar";
+		// 2. Crear Usuario si es nuevo
+		if (esNuevo && username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
+			Usuario nuevoUsuario = new Usuario();
+			nuevoUsuario.setUsername(username);
+			nuevoUsuario.setPassword(passwordEncoder.encode(password));
+			nuevoUsuario.setEmpleado(empleado);
+			usuarioService.guardarU(nuevoUsuario);
+		}
+
+	    attributes.addFlashAttribute("msg", "Datos del empleado guardados correctamente");
+	    return "redirect:/empleado/empleados";
+	}
+	
+	@GetMapping("/empleado/editar/{id}")
+	public String editar(@PathVariable ("id") int idEmpleado, Model model) {
+		Empleado empleado = empleadoService.buscarEmpPorId(idEmpleado);
+		model.addAttribute("empleado", empleado);
+		model.addAttribute("listaDepartamentos", departamentoService.buscarTodosDep());
+		return "empleados/formEmpleado";
 	}
 	
 	@InitBinder
-	public void initBinder(WebDataBinder webDataBinder) {
-	  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	  webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
+	public void initBinder(WebDataBinder webDatabinder) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		webDatabinder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
 	}
-				
-	@GetMapping("/eliminar/{id}")
-	public String eliminar(@PathVariable("id") int idEmpleado, RedirectAttributes attributes) {
-	    empleadoService.eliminarEmp(idEmpleado);
-	    attributes.addFlashAttribute("msg", "El empleado ha sido desactivado exitosamente.");
-	    return "redirect:/empleado/listar";
+	
+	@GetMapping("/empleado/ver/{id}")
+	public String verEmpleado (@PathVariable ("id") int idEmpleado, Model model) {
+		Empleado empleado = empleadoService.buscarEmpPorId(idEmpleado);
+		model.addAttribute("empleado", empleado);
+		return "empleados/verEmpleado";
+	}
+	
+	@GetMapping("/empleado/eliminar/{id}")
+	public String eliminarEmpleado (@PathVariable ("id") int idEmpleado, RedirectAttributes attributes) {
+		empleadoService.eliminarEmp(idEmpleado);
+		attributes.addFlashAttribute("msg", "Empleado eliminado correctamente");
+		return "redirect:/empleado/empleados";
 	}
 }

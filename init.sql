@@ -22,3 +22,15 @@ VALUES (2, 'Pruebas de Seguridad con Spring Security', 'Filtros de endpoints y c
 -- Vinculación de un empleado de pruebas (asumiendo ID 2 o superior) con una actividad
 INSERT IGNORE INTO ActividadEmpleado (id, empleado_id, actividad_id, fechaAsignacion) 
 VALUES (1, 2, 1, NOW());
+
+CREATE TABLE actividad (
+    idActividad INT AUTO_INCREMENT PRIMARY KEY, -- Declarada explícitamente como key
+    nombre VARCHAR(255) NULL,
+    descripcion VARCHAR(255) NULL,
+    fechaInicio DATE NULL,
+    fechaFin DATE NULL,
+    activo TINYINT(1) DEFAULT 1,
+    id_proyecto INT,
+    CONSTRAINT fk_actividad_proyecto FOREIGN KEY (id_proyecto) 
+        REFERENCES proyecto(id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;

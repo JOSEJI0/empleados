@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Contratos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>body { display: flex; flex-direction: column; min-height: 100vh; background-color: #f8f9fa; } main { flex: 1; }</style>
+</head>
+<body>
+
+    <header th:insert="~{fragmentos/fragments :: header}"></header>
+
+    <main class="container mt-5 mb-5">
+        <div class="card shadow-sm border-0 border-top border-success border-4">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h3 class="mb-0 text-success fw-bold"><i class="bi bi-file-earmark-text me-2"></i>Historial de Contratos</h3>
+                <a th:href="@{/mi-panel}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Volver</a>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light text-center">
+                            <tr>
+                                <th>Folio</th>
+                                <th>NSS</th>
+                                <th>Tipo de Contrato</th>
+                                <th>Estado</th>
+                                <th>Descargar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="contrato : ${contratosLista}">
+                                <td class="text-center fw-bold" th:text="${contrato.id}">1</td>
+                                <td class="text-center font-monospace" th:text="${contrato.noSeguroSocial}">NSS</td>
+                                <td class="text-center" th:text="${contrato.tipoContrato}">Tipo</td>
+                                
+                                <td class="text-center">
+                                    <span th:if="${contrato.estado == 1}" class="badge bg-success rounded-pill">Vigente</span>
+                                    <span th:if="${contrato.estado == 0}" class="badge bg-secondary rounded-pill">Vencido</span>
+                                </td>
+                                
+                                <td class="text-center">
+                                    <a th:href="@{/contrato/exportarPdf/{id}(id=${contrato.id})}" class="btn btn-danger btn-sm" title="Descargar PDF">
+                                        <i class="bi bi-file-pdf-fill"></i> PDF
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div th:if="${contratosLista.empty}" class="text-center p-5 text-muted">
+                        <i class="bi bi-folder-x fs-1"></i>
+                        <p class="mt-2">No tienes contratos registrados.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:insert="~{fragmentos/fragments :: footer}"></footer>
+</body>
+</html>

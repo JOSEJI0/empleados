@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package itch.tsp.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,15 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-// Nuevas importaciones necesarias
-import com.example.demo.model.Actividad;
-import com.example.demo.model.ActividadEmpleado;
-import com.example.demo.model.Empleado;
-import com.example.demo.model.Proyecto;
-import com.example.demo.repository.ActividadEmpleadoRepository;
-import com.example.demo.repository.ActividadRepository;
-import com.example.demo.service.implementJPA.EmpleadoServiceJpa;
-import com.example.demo.service.implementJPA.ProyectoServiceJpa;
+import itch.tsp.model.Actividad;
+import itch.tsp.model.ActividadEmpleado;
+import itch.tsp.model.Empleado;
+import itch.tsp.model.Proyecto;
+import itch.tsp.repository.ActividadEmpleadoRepository;
+import itch.tsp.repository.ActividadRepository;
+import itch.tsp.service.implementJPA.EmpleadoServiceJpa;
+import itch.tsp.service.implementJPA.ProyectoServiceJpa;
 
 @Controller
 @RequestMapping("/proyectos")

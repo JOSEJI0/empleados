@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del Contrato - Área 51</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        body { display: flex; flex-direction: column; min-height: 100vh; background-color: #f8f9fa; }
+        main { flex: 1; }
+        .label-custom { font-size: 0.85rem; font-weight: 700; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; }
+        .value-custom { font-size: 1.1rem; color: #212529; margin-bottom: 0; }
+        
+        .profile-avatar-contract {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border: 4px solid #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <header th:insert="~{fragmentos/fragments :: header}"></header>
+
+    <main class="container mt-5 mb-5">
+        
+        <div class="d-flex justify-content-between mb-4">
+            <a th:href="@{/contrato/contratos}" class="btn btn-link text-decoration-none p-0 text-dark fw-bold">
+                <i class="bi bi-arrow-left"></i> Volver a contratos
+            </a>         
+            <div>
+                <a th:href="@{/contrato/editar/{id}(id=${contrato.id})}" class="btn btn-outline-warning me-2 shadow-sm">
+                    <i class="bi bi-pencil-fill"></i> Editar
+                </a>
+                <a th:href="@{/contrato/exportarPdf/{id}(id=${contrato.id})}" class="btn btn-danger shadow-sm">
+                    <i class="bi bi-file-earmark-pdf-fill me-1"></i> Imprimir PDF
+                </a>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-bottom py-3">
+                <h4 class="mb-0 text-secondary fw-bold"><i class="bi bi-folder2-open me-2"></i>Expediente Digital N° <span th:text="${contrato.id}">000</span></h4>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+                
+                <h5 class="text-primary border-bottom pb-2 mb-4"><i class="bi bi-person-badge me-2"></i>Datos del Trabajador</h5>
+                
+                <div class="row mb-5 align-items-center">
+                    <div class="col-sm-3 text-center mb-3 mb-sm-0 border-end-sm">
+                        <div class="position-relative d-inline-block">
+                            <img th:if="${contrato.empleado != null and contrato.empleado.foto != null and contrato.empleado.foto != 'no-imagen.jpg' and contrato.empleado.foto != ''}" 
+                                 th:src="@{'/empleados/' + ${contrato.empleado.foto}}"
+                                 alt="Foto Empleado" class="rounded-circle profile-avatar-contract shadow-sm">
+                            
+                            <img th:unless="${contrato.empleado != null and contrato.empleado.foto != null and contrato.empleado.foto != 'no-imagen.jpg' and contrato.empleado.foto != ''}" 
+                                 src="https://via.placeholder.com/120?text=U"
+                                 alt="Sin Foto" class="rounded-circle profile-avatar-contract shadow-sm bg-secondary">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-9 ps-md-4">
+                        <div class="row g-4">
+                            <div class="col-12 mb-2">
+                                <p class="label-custom mb-1">Nombre Completo</p>
+                                <p class="value-custom fw-bold text-dark fs-4" 
+                                   th:text="${contrato.empleado != null ? contrato.empleado.nombre + ' ' + contrato.empleado.apellidos : 'Sin asignar'}">
+                                   Nombre
+                                </p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="label-custom mb-1">Número de Seguro Social (NSS)</p>
+                                <p class="value-custom font-monospace" th:text="${contrato.noSeguroSocial}">00000000000</p>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <p class="label-custom mb-1">Departamento Asignado</p>
+                                <p class="value-custom" 
+                                   th:text="${contrato.empleado != null and contrato.empleado.departamento != null ? contrato.empleado.departamento.nombre : 'Sin Área Asignada'}">
+                                   Departamento
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h5 class="text-primary border-bottom pb-2 mb-4"><i class="bi bi-file-earmark-text me-2"></i>Condiciones del Contrato</h5>
+                <div class="row g-4 mb-4">
+                    <div class="col-sm-6">
+                        <p class="label-custom mb-1">Tipo de Contrato</p>
+                        <p class="value-custom fw-bold" th:text="${contrato.tipoContrato}">Indeterminado</p>
+                    </div>
+                    
+                    <div class="col-sm-6">
+                        <p class="label-custom mb-1">Salario Mensual Bruto</p>
+                        <p class="value-custom fw-bold text-success fs-5" 
+                           th:text="${contrato.empleado != null ? '$' + #numbers.formatDecimal(contrato.empleado.salario, 1, 'COMMA', 2, 'POINT') : '$0.00'}">
+                           $0.00
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer th:insert="~{fragmentos/fragments :: footer}"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

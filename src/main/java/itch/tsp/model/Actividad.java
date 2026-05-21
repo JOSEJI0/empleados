@@ -8,6 +8,7 @@ public class Actividad {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idActividad") // <-- SOLUCIÓN: Vincula la propiedad con la columna real de MySQL
 	private Integer idActividad;
 	private String nombre;
 	private String descripcion;

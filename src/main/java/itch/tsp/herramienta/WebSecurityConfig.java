@@ -8,6 +8,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import itch.tsp.security.CustomUserDetailsService;
+
 @Configuration
 public class WebSecurityConfig {
 
@@ -23,14 +25,16 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-
-            		.requestMatchers("/css/**", "/js/**", "/imagenes/**", "/empleados/**", "/departamentos/**", "/login", "/error").permitAll()
+                // 1. Recursos estáticos
+                .requestMatchers("/css/**", "/js/**", "/imagenes/**", "/empleados/**", "/departamentos/**", "/login", "/error").permitAll()
                 
+                // 2. Rutas del EMPLEADO (Blindado para aceptar roles con o sin prefijo)
                 .requestMatchers("/mi-panel", "/mis-contratos", "/mis-proyectos")
                     .hasAnyAuthority("USER", "ROLE_USER", "ADMIN", "ROLE_ADMIN")
                 .requestMatchers("/contrato/exportarPdf/**")
                     .hasAnyAuthority("USER", "ROLE_USER", "ADMIN", "ROLE_ADMIN")
                 
+                // 3. Rutas exclusivas del ADMINISTRADOR
                 .requestMatchers("/empleado/**", "/departamento/**", "/contrato/**", "/proyectos/**")
                     .hasAnyAuthority("ADMIN", "ROLE_ADMIN")
                 
@@ -39,6 +43,7 @@ public class WebSecurityConfig {
             .formLogin(form -> form
                 .loginPage("/login")
                 .successHandler((request, response, authentication) -> {
+                    // Verificamos si es admin usando ambas variantes
                     boolean isAdmin = authentication.getAuthorities().stream()
                         .anyMatch(rol -> rol.getAuthority().equals("ROLE_ADMIN") || rol.getAuthority().equals("ADMIN"));
                     
